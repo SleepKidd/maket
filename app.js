@@ -166,7 +166,7 @@ function renderStory() { $("#story").innerHTML = SCENES.map(renderScene).join(""
 class SceneManager {
   constructor({ world }) {
     this.world = world;
-    this.sections = $(".scene");
+    this.sections = $$(".scene");
     this.current = null;
     this.visible = new Map();
     this.observer = new IntersectionObserver((entries) => this.onIntersect(entries), { threshold: [0, .2, .55, .85], rootMargin: "-12% 0px -12% 0px" });
