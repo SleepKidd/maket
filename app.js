@@ -4,6 +4,8 @@ import { InputManager } from "./src/core/input.js";
 import { AudioManager } from "./src/core/audio.js";
 import { createBotanicalWorld } from "./src/webgl/world.js";
 import { enhanceStory } from "./src/visual/light-effects.js";
+import { initLoveExperience } from "./src/interactive/love-experience.js";
+import { LOVE_LETTERS, TENDER_NOTES, DAY_NIGHT_LETTERS, PROMISES, FINAL_LETTER } from "./src/data/love-letters.js";
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -84,10 +86,74 @@ function renderScene(scene) {
       return `<section ${common}>${sceneKicker(scene, "Тогда и сейчас")}${sceneCopy(scene)}<div class="compare-frame" data-compare><div class="compare-image compare-image--then">${photoSlot({ label: "самая ранняя совместная", category: "then-now" })}</div><div class="compare-image compare-image--now">${photoSlot({ label: "одна из последних", category: "then-now" })}</div><div class="compare-divider" data-compare-divider tabindex="0" role="slider" aria-label="Сравнить тогда и сейчас" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"><span>↔</span></div></div><div class="compare-caption"><span>тогда</span><strong>730 DAYS</strong><span>сейчас</span></div></section>`;
     case "voice":
       return `<section ${common}>${sceneKicker(scene, "тишина")}${sceneCopy(scene)}<button class="voice-button" id="voiceButton" type="button"><span>▶</span> включить голосовое</button><div class="voice-wave" data-voice-wave>${Array.from({ length: 15 }, () => "<i></i>").join("")}</div></section>`;
+    case "letters":
+      return `<section ${common}>
+        ${sceneKicker(scene, "письма от сердца")}${sceneCopy(scene)}
+        <div class="letter-section-intro"><span>18.11.2024 — 18.11.2026</span><span>письма для моей Миланы</span></div>
+        <div class="love-envelope-grid">
+          ${LOVE_LETTERS.map((letter, index) => `<button class="love-envelope" type="button" data-open-letter="${index}" aria-label="Открыть письмо: ${esc(letter.title)}">
+            <span class="love-envelope__art" aria-hidden="true"><span class="love-envelope__paper"></span><span class="love-envelope__seal">M</span></span>
+            <span class="love-envelope__topline"><span>${esc(letter.when)}</span><span>${esc(letter.number)} / 07</span></span>
+            <strong class="love-envelope__title">${esc(letter.title)}</strong>
+            <span class="love-envelope__lead">${esc(letter.lead)}</span>
+            <span class="love-envelope__cta">Открыть письмо</span>
+          </button>`).join("")}
+        </div>
+        <p class="letter-collection-complete" data-letter-complete hidden>Ты открыла все семь писем, моя любимка. А сколько ещё я хочу сказать тебе впереди…</p>
+      </section>`;
+    case "daynight":
+      return `<section ${common}>
+        ${sceneKicker(scene, "для тебя в любое время")}${sceneCopy(scene)}
+        <div class="daynight-switch" role="group" aria-label="Время для письма">
+          <button type="button" data-daypart="morning" aria-pressed="true">☼ &nbsp; Утро</button>
+          <button type="button" data-daypart="night" aria-pressed="false">☾ &nbsp; Ночь</button>
+        </div>
+        <article class="daynight-panel" data-daynight-panel data-mode="morning" aria-live="polite">
+          <span class="daynight-panel__icon" data-day-icon aria-hidden="true">${DAY_NIGHT_LETTERS.morning.icon}</span>
+          <p class="daynight-panel__caption" data-day-caption>${esc(DAY_NIGHT_LETTERS.morning.kicker)}</p>
+          <h3 class="daynight-panel__title" data-day-title>${esc(DAY_NIGHT_LETTERS.morning.title)}</h3>
+          <div class="daynight-panel__text" data-day-paragraphs>${DAY_NIGHT_LETTERS.morning.paragraphs.map(p=>`<p>${esc(p)}</p>`).join("")}</div>
+        </article>
+      </section>`;
+    case "tender":
+      return `<section ${common}>
+        ${sceneKicker(scene, "мои нежные обращения")}${sceneCopy(scene)}
+        <div class="tender-layout">
+          <div class="tender-chooser" role="group" aria-label="Выбери ласковое имя">
+            ${TENDER_NOTES.map((note,index)=>`<button class="tender-chip" type="button" data-tender-index="${index}" aria-pressed="${index===0}">${esc(note.name)}</button>`).join("")}
+          </div>
+          <article class="tender-reading" aria-live="polite">
+            <span class="tender-reading__eyebrow">НЕСКОЛЬКО СЛОВ ТОЛЬКО ДЛЯ ТЕБЯ</span>
+            <h3 class="tender-reading__title" data-tender-heading>${esc(TENDER_NOTES[0].title)}</h3>
+            <p class="tender-reading__text" data-tender-text>${esc(TENDER_NOTES[0].text)}</p>
+            <span class="tender-reading__foot">С ЛЮБОВЬЮ, ТВОЙ ♥</span>
+          </article>
+        </div>
+      </section>`;
+    case "vows":
+      return `<section ${common}>
+        ${sceneKicker(scene, "с любовью на каждый день")}${sceneCopy(scene)}
+        <div class="promise-list">
+          ${PROMISES.map((item,index)=>`<details class="promise">
+            <summary><span class="promise__number">${String(index+1).padStart(2,"0")}</span><span>${esc(item.title)}</span><span class="promise__plus" aria-hidden="true">+</span></summary>
+            <p>${esc(item.text)}</p>
+          </details>`).join("")}
+        </div>
+        <p class="vows-ending">Я хочу, чтобы ты чувствовала мою любовь не только в этих письмах, но и в каждом нашем дне.</p>
+      </section>`;
     case "letter":
-      return `<section ${common}>${sceneKicker(scene, "Самые главные слова")}<div class="letter-wrap"><p class="eyebrow">${esc(scene.kicker)}</p><h2>${esc(scene.title)}</h2><p class="letter-copy">Милана, два года назад началась история, которую я берегу всем сердцем. И чем дальше она продолжается, тем сильнее я понимаю, как много для меня значит твоё присутствие.</p><p class="letter-copy">Я люблю не только наши особенные даты, но и простые моменты рядом. Тебя — настоящую, неповторимую. Мне хочется и дальше узнавать тебя, поддерживать, смеяться вместе, создавать воспоминания и выбирать нас каждый день.</p><div class="letter-sign">Я люблю тебя.<br><span>И это только первые два года.</span></div><button class="replay-button" id="replayButton" type="button">↻ replay <span>${RELATIONSHIP.startDate} — ∞</span></button></div></section>`;
+      return `<section ${common}>
+        ${sceneKicker(scene, "только для тебя")}
+        <article class="letter-wrap">
+          <p class="eyebrow">${esc(FINAL_LETTER.kicker)}</p>
+          <h2>${esc(FINAL_LETTER.title)}</h2>
+          ${FINAL_LETTER.paragraphs.map(paragraph=>`<p class="letter-copy">${esc(paragraph)}</p>`).join("")}
+          <div class="letter-sign">${esc(FINAL_LETTER.signature)}<span>18 ноября 2026 года</span></div>
+          <a class="letter-next" href="#finale">И ещё одна последняя вещь <span aria-hidden="true">↗</span></a>
+        </article>
+      </section>`;
     case "finale":
-      return `<section ${common}>${sceneKicker(scene, "полное цветение")}<div class="finale-number">${RELATIONSHIP.days}</div><p class="finale-subtitle">дней с тобой</p>${photoSlot({ label: "свежая совместная фотография", category: "finale" }, "finale-photo")}<div class="finale-line"><span>Два года.</span><strong>${esc(scene.title)}</strong><small>${esc(scene.accent)}</small></div></section>`;
+      return `<section ${common}>${sceneKicker(scene, "полное цветение")}<div class="finale-number">${RELATIONSHIP.days}</div><p class="finale-subtitle">дней с тобой</p>${photoSlot({ label: "свежая совместная фотография", category: "finale" }, "finale-photo")}<div class="finale-line"><span>Два года.</span><strong>${esc(scene.title)}</strong><small>${esc(scene.accent)}</small></div><button class="replay-button" id="replayButton" type="button">↻ посмотреть снова <span>${RELATIONSHIP.startDate} — ∞</span></button></section>`;
     case "secret":
       return `<section ${common}>${sceneKicker(scene, "секретный эпилог")}<div class="scene-copy scene-copy--center"><p class="eyebrow">${esc(scene.kicker)}</p><h2>${esc(scene.title)}<br><em>${esc(scene.accent)}</em></h2><p>${esc(scene.copy)}</p><p class="secret-count" data-secret-count>0 / ${SECRETS.length} найдено</p></div></section>`;
     default:
@@ -254,6 +320,9 @@ function setupDebug({ quality, world }) {
 
 async function boot() {
   renderStory();
+  initLoveExperience();
+  const countElement = document.querySelector(".topbar-meta span:last-child");
+  if (countElement) countElement.textContent = String(SCENES.length - 1).padStart(2, "0");
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) document.body.classList.add("is-reduced-motion");
   const quality = new QualityManager();
   let world = null;
