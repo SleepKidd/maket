@@ -176,7 +176,7 @@ function setupInteractions({ audio, input }) {
     const played = await audio.start();
     if (!played && audio.music) showToast("Не удалось воспроизвести музыку");
     if (navigator.vibrate) navigator.vibrate(10);
-    document.getElementById("before-us")?.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth", block: "start" });
+    document.getElementById("before-us")?.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
     /* Motion sensors are optional: normal touch interaction works without permission prompts. */
   });
 
