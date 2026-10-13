@@ -12,13 +12,17 @@ An interactive, **mobile-first** love-story website for the anniversary **18 Nov
 index.html                       page shell
 styles.css                       original foundational styles
 light.css                        light-theme styling and mobile scene art direction
-app.js                           26 scene layouts, interactions and content wiring
+app.js                           30 story chapters, scene rendering and interactions
+love.css                         premium envelopes, love letters, notes and mobile layout
 src/data/story.js                relationship dates, captions, photo slots, audio paths
 src/core/quality.js              quality profiles and single render scheduler
 src/core/input.js                pointer interaction and optional tilt
 src/core/audio.js                optional music / voice playback
 src/webgl/world.js               instantiated 3D petals, leaves, flowers, lighting
-src/visual/light-effects.js      botanical illustration, drifting petals, reveal/progress
+src/visual/light-effects.js      botanical illustration, falling petals, chapter love notes
+src/data/love-letters.js         7 letters, 12 tender names, morning/night, vows, final letter
+src/interactive/love-experience.js accessible letter dialog and touch-ready interactions
+scripts/e2e.mjs                 Playwright checks on mobile and desktop
 scripts/smoke.mjs                dependency-free source checks
 ```
 
@@ -32,7 +36,7 @@ Visual elements include decorative floral illustrations, ambient petals, animate
 
 ## Important: photos and personal content
 
-There are deliberately **no invented photos, voice clips, private messages or made-up memories** in this repository. The styled placeholders are only waiting for your real archive.
+There are deliberately **no invented photos, voice clips, private messages or made-up memories** in this repository. Romantic prose in `src/data/love-letters.js` is original drafted text for the site, not claimed to be the couple's actual private messages or remembered events. The styled placeholders are only waiting for your real archive.
 
 Open `src/data/story.js`. An image slot can use:
 
@@ -79,6 +83,14 @@ node --check src/visual/light-effects.js
 ```
 
 Use `?debug=1` for the WebGL FPS/draw-call HUD.
+
+## Customizing the love letters
+
+Edit `src/data/love-letters.js` to customize the seven envelope letters, twelve affectionate messages (котёнок, кошечка, заенька, лучик солнца, любимка, родная девочка…), two morning/night letters, six real-life promises, twelve chapter interludes, and the final long letter. They deliberately avoid inventing specific memories.
+
+All seven envelopes work as accessible tap-to-open letters. The native dialog supports Escape, keyboard navigation, and next/previous letters. `scripts/e2e.mjs` verifies these interactions with Playwright on 375×812, 390×844, 430×932 and 1440×900 viewports. CI uploads screenshots for review.
+
+To run the browser tests locally, install Playwright and its Chromium browser, then run `node scripts/e2e.mjs`.
 
 ## Test devices
 
