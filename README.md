@@ -1,38 +1,88 @@
 # MILANA — TWO YEARS
 
-Mobile-first макет интерактивного сайта к двухлетию отношений.
+Mobile-first cinematic interactive archive for two years of relationship.
 
-Дата начала отношений: **18.11.2024**  
-Дата макета: **13.10.2026**
+- Start: **18.11.2024**
+- Anniversary: **18.11.2026**
+- Story target: **730 days**
 
-## Что уже работает
+## Architecture
 
-- WebGL-сцена Three.js на мобильном и desktop: 3D-цветы, листья, лепестки, частицы, свет и параллакс.
-- Первый тап включает звук и запускает вход в историю.
-- Вертикальная мобильная драматургия с отдельной композицией сцен, а не растянутым desktop.
-- Секции: до нас, дата начала, первые месяцы, фотоплёнка, первый месяц, интерактивный стол, обычные дни, цветочная timeline, полгода, карта мест, переписки, год, глава «Ты», «Я люблю…», Then/Now, голосовое, 730 дней, письмо.
-- Touch/pointer interactions: свайп по плёнке, drag фотографии, tap по карте, секретные воспоминания, сравнение Then/Now, haptic feedback где доступен.
-- Адаптивный свет, количество частиц и pixel ratio под размер экрана.
-- `prefers-reduced-motion` и удобные крупные touch-зоны.
+This is intentionally a static ES-module project so GitHub Pages can serve it directly without a runtime framework or a build server.
 
-## Запуск
+```text
+index.html
+styles.css
+app.js                         composition + interaction wiring
+src/data/story.js              data-driven scenes, slots, secrets and categories
+src/core/quality.js            HIGH / MEDIUM / LOW + one RAF scheduler
+src/core/input.js              coalesced pointer input + opt-in device tilt
+src/core/audio.js              music / voice / SFX audio manager
+src/webgl/world.js             shared-geometry instanced botanical WebGL scene
+```
 
-Проект статический и не требует сборки:
+## Performance decisions
+
+- One render scheduler, paused on `document.hidden`.
+- No independent animation loops per scene.
+- One shared petal geometry and one shared leaf geometry rendered through `InstancedMesh`.
+- Mobile pixel ratio capped to 1.08–1.35 depending on the quality profile.
+- Stable `100svh` canvas; resize is width/orientation driven and debounced.
+- Native scroll is preserved. There is no Lenis-style smooth-scroll layer.
+- Pointer state is coalesced and consumed once per render tick.
+- Compare slider caches its rectangle on pointer-down instead of reading layout on every move.
+- No animated fullscreen `backdrop-filter`, SVG `feTurbulence`, or global blend-mode noise.
+- `prefers-reduced-motion` and `prefers-reduced-transparency` are supported.
+- WebGL failure falls back to a CSS botanical composition without breaking the story.
+- `?debug=1` enables a development-only FPS / draw-call / triangle overlay.
+
+## Content pipeline
+
+Edit `src/data/story.js` first. The file contains the scenes, photo categories, real-content slots, message slots, places, and hidden memories. It deliberately uses placeholders instead of inventing personal facts.
+
+### Photos
+
+The data model is ready for:
+
+- 200–250 source photos;
+- 110–150 final photos;
+- categories: `before-us`, `beginning`, `one-month`, `three-months`, `half-year`, `everyday`, `places`, `first-year`, `second-year`, `milana`, `us`, `then-now`, `finale`.
+
+When real files are added, use known dimensions and `data-src` / WebP or AVIF sources. `AssetManager` loads them only near the viewport.
+
+### Audio
+
+`src/core/audio.js` already supports:
+
+- `assets/audio/relationship.mp3`;
+- `assets/audio/voice-note.mp3`;
+- separate low-volume SFX.
+
+No oscillator placeholder is used. Add files and pass their paths in `boot()` when the real track and voice are ready.
+
+### Adding another year
+
+Add a new scene object to `SCENES` in `src/data/story.js`, assign a new `stage` value, and select one of the existing scene kinds or add a single renderer branch in `renderScene()`.
+
+## Run locally
 
 ```bash
 python3 -m http.server 4173
 ```
 
-Открыть `http://localhost:4173`.
+Open `http://localhost:4173/`.
 
-## Что заменить перед production
+The site is GitHub Pages-compatible and has no build step. Before deployment, run:
 
-1. Все блоки `placeholder-photo` заменить реальными снимками Миланы и вашими совместными кадрами.
-2. Вынести контент в `relationship.ts`/`relationship.js`: даты, подписи, 40–70 фактов, места, сообщения и пасхалки.
-3. Подключить настоящий трек, голосовое и мягкие SFX после получения файлов.
-4. Сжать изображения в AVIF/WebP, добавить KTX2/Draco/Meshopt для финальных 3D-ассетов.
-5. Написать настоящее письмо на основе фактов, а не оставлять демонстрационный текст.
+```bash
+node --check app.js
+node --check src/data/story.js
+node --check src/core/quality.js
+node --check src/core/input.js
+node --check src/core/audio.js
+node --check src/webgl/world.js
+```
 
-## Важное
+## Audit notes
 
-Текущая версия — художественный макет и технический вертикальный срез. Реальные фотографии и личные тексты сознательно не выдуманы.
+The previous version had an always-running RAF, one mesh and geometry per petal, resize on every event, unconditional device-orientation input, global SVG turbulence, several fixed/composited layers, an unused gain node on every sound toggle, hardcoded content, no media pipeline, no WebGL fallback, and showed `13.10.2026` as the end date. These are addressed in the current architecture. The end date is now `18.11.2026`.
