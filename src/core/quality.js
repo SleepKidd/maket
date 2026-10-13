@@ -5,11 +5,11 @@ export class QualityManager {
     const dpr = Math.min(window.devicePixelRatio || 1, 3);
     const width = window.innerWidth;
     const mobile = matchMedia("(pointer: coarse)").matches || width < 720;
-    const weak = memory <= 2 || cores <= 4 || (mobile && dpr > 2.4);
-    this.profile = weak ? "low" : (mobile || width < 1200 ? "medium" : "high");
+    const weak = memory <= 2 || cores <= 2;
+    this.profile = weak ? "low" : (mobile || width < 1100 ? "medium" : "high");
     this.profiles = {
       high: { fps: 60, pixelRatio: Math.min(dpr, 1.65), flowers: 10, petals: 160, leaves: 52, shadows: true, glass: "soft" },
-      medium: { fps: 45, pixelRatio: Math.min(dpr, 1.35), flowers: 7, petals: 95, leaves: 32, shadows: false, glass: "simple" },
+      medium: { fps: 30, pixelRatio: Math.min(dpr, 1.35), flowers: 7, petals: 95, leaves: 32, shadows: false, glass: "simple" },
       low: { fps: 30, pixelRatio: Math.min(dpr, 1.08), flowers: 5, petals: 52, leaves: 20, shadows: false, glass: "flat" },
     };
     this.current = this.profiles[this.profile];
@@ -25,8 +25,12 @@ export class QualityManager {
     if (this.frameSamples.length > 45) this.frameSamples.shift();
     if (this.frameSamples.length === 45) {
       const average = this.frameSamples.reduce((sum, item) => sum + item, 0) / this.frameSamples.length;
-      if (average > 31 && this.profile !== "low") this.setProfile("low");
-      else if (average > 23 && this.profile === "high") this.setProfile("medium");
+      const budget = 1000 / this.current.fps;
+      if (average > budget * 1.55) {
+        if (this.profile === "high") this.setProfile("medium");
+        else if (this.profile === "medium") this.setProfile("low");
+        this.frameSamples.length = 0;
+      }
     }
   }
 
