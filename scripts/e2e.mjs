@@ -46,7 +46,7 @@ try {
     await page.waitForSelector("#story > section", { timeout: 10000 });
     await page.waitForSelector("[data-letter-note]", { timeout: 10000 });
 
-    assert.equal(await page.locator("#story > section").count(), 26, `${device.name}: scene count`);
+    assert.equal(await page.locator("#story > section").count(), 15, `${device.name}: scene count`);
     assert.equal(await page.locator("[data-letter-note]").count(), 7, `${device.name}: scattered letter count`);
     assert((await page.locator(".photo-slot").count()) <= 50, `${device.name}: photo display budget exceeded`);
     const layout = await page.evaluate(() => ({
@@ -56,7 +56,7 @@ try {
     }));
     assert(layout.horizontal <= 5, `${device.name}: horizontal overflow ${layout.horizontal}px`);
     assert.match(layout.date, /18\.11\.2026/);
-    assert.match(layout.topbar, /00\s*\/\s*25/);
+    assert.match(layout.topbar, /00\s*\/\s*14/);
 
     await page.locator("#beginButton").click();
     assert(await page.locator("body").evaluate(el => el.classList.contains("started")), `${device.name}: start state`);
@@ -86,7 +86,7 @@ try {
     await page.locator(".prologue-scene").screenshot({ path: resolve(shots, `${device.name}.png`) });
     await page.locator(".before-scene").screenshot({ path: resolve(shots, `${device.name}-letters.png`) });
     assert.deepEqual(runtimeErrors, [], `${device.name}: runtime errors`);
-    console.log(`${device.name}: OK | 26 scenes | 15 unique photos | 7 letter moments | touch-safe layout`);
+    console.log(`${device.name}: OK | 15 scenes | 15 unique photos | 7 letter moments | touch-safe layout`);
     await context.close();
   }
 } finally {
