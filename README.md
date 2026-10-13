@@ -1,71 +1,73 @@
-# MILANA — Two Years · Light Atelier
+# MILANA — TWO YEARS
 
-An interactive, **mobile-first** love-story website for the anniversary **18 November 2026**.
+Mobile-first cinematic interactive archive for two years of relationship.
 
-**Live site:** https://sleepkidd.github.io/maket/
+- Start: **18.11.2024**
+- Anniversary: **18.11.2026**
+- Story target: **730 days**
 
-**Design direction:** daylight, warm ivory, cream, blush pink, botanical greens, editorial typography, soft shadows, floating petals and 3D flowers. The site is an evolving photo archive, not a dark landing page.
+## Architecture
 
-## Project files
+This is intentionally a static ES-module project so GitHub Pages can serve it directly without a runtime framework or a build server.
 
 ```text
-index.html                       page shell
-styles.css                       original foundational styles
-light.css                        light-theme styling and mobile scene art direction
-app.js                           30 story chapters, scene rendering and interactions
-love.css                         premium envelopes, love letters, notes and mobile layout
-src/data/story.js                relationship dates, captions, photo slots, audio paths
-src/core/quality.js              quality profiles and single render scheduler
-src/core/input.js                pointer interaction and optional tilt
-src/core/audio.js                optional music / voice playback
-src/webgl/world.js               instantiated 3D petals, leaves, flowers, lighting
-src/visual/light-effects.js      botanical illustration, falling petals, chapter love notes
-src/data/love-letters.js         7 letters, 12 tender names, morning/night, vows, final letter
-src/interactive/love-experience.js accessible letter dialog and touch-ready interactions
-scripts/e2e.mjs                 Playwright checks on mobile and desktop
-scripts/smoke.mjs                dependency-free source checks
+index.html
+styles.css
+app.js                         composition + interaction wiring
+src/data/story.js              data-driven scenes, slots, secrets and categories
+src/core/quality.js            HIGH / MEDIUM / LOW + one RAF scheduler
+src/core/input.js              coalesced pointer input + opt-in device tilt
+src/core/audio.js              music / voice / SFX audio manager
+src/webgl/world.js             shared-geometry instanced botanical WebGL scene
 ```
 
-Vanilla ES modules; no bundling required for GitHub Pages. Three.js is loaded dynamically; story content and SVG botanical decoration remain visible if WebGL or its CDN fails.
+## Performance decisions
 
-## The 3D floral artwork
+- One render scheduler, paused on `document.hidden`.
+- No independent animation loops per scene.
+- One shared petal geometry and one shared leaf geometry rendered through `InstancedMesh`.
+- Mobile pixel ratio capped to 1.08–1.35 depending on the quality profile.
+- Stable `100svh` canvas; resize is width/orientation driven and debounced.
+- Native scroll is preserved. There is no Lenis-style smooth-scroll layer.
+- Pointer state is coalesced and consumed once per render tick.
+- Compare slider caches its rectangle on pointer-down instead of reading layout on every move.
+- No animated fullscreen `backdrop-filter`, SVG `feTurbulence`, or global blend-mode noise.
+- `prefers-reduced-motion` and `prefers-reduced-transparency` are supported.
+- WebGL failure falls back to a CSS botanical composition without breaking the story.
+- `?debug=1` enables a development-only FPS / draw-call / triangle overlay.
 
-The botanical scene uses a curved triangular mesh for each petal (rather than sphere primitives), layered per blossom, with instanced flower petals, leaves, stems, centres and floating petals. Mobile and desktop have different flower positions. A capped device pixel ratio and 30/45/60 fps scheduler are used for different performance tiers. Detail is gradually added as the story progresses.
+## Content pipeline
 
-Visual elements include decorative floral illustrations, ambient petals, animated reveals, circular filigree, a timeline with botanical details, paper/film/Polaroid treatments, glass, fabric, a memory map, a compare slider and large typographic anniversary chapters.
+Edit `src/data/story.js` first. The file contains the scenes, photo categories, real-content slots, message slots, places, and hidden memories. It deliberately uses placeholders instead of inventing personal facts.
 
-## Important: photos and personal content
+The visual system is рассчитана на **15–20 уникальных фотографий**. Сейчас в каталоге 18 photo IDs. Они переиспользуются в разных монтажных формах — крупный кадр, вертикальный тоннель, плёнка, Polaroid, portrait stack, Then / Now и финальный кадр. Поэтому история остаётся насыщенной, но не требует загрузить сотню снимков.
 
-There are deliberately **no invented photos, voice clips, private messages or made-up memories** in this repository. Romantic prose in `src/data/love-letters.js` is original drafted text for the site, not claimed to be the couple's actual private messages or remembered events. The styled placeholders are only waiting for your real archive.
+### Photos
 
-Open `src/data/story.js`. An image slot can use:
+The data model is ready for:
 
-```js
-{
-  label: "Наша первая прогулка",
-  alt: "Мы с Миланой в парке",
-  category: "beginning",
-  ratio: "4 / 5",
-  src: "./assets/photos/beginning/first-walk.webp",
-  width: 960,
-  height: 1200
-}
-```
+- 15–20 source photos;
+- 15–20 unique final photos;
+- 35–45 display instances through intentional reuse;
+- categories: `before-us`, `beginning`, `one-month`, `three-months`, `half-year`, `everyday`, `places`, `first-year`, `second-year`, `milana`, `us`, `then-now`, `finale`.
 
-For the existing `slot` helper, you can extend it to accept `src` and actual dimensions, or use such objects directly in each scene's `slots`. Keep stable aspect ratios, compress original photos, and use descriptive filenames. Do not commit uncompressed multi-megabyte source photos.
+When real files are added, use known dimensions and `data-src` / WebP or AVIF sources. `AssetManager` loads them only near the viewport.
 
-**Privacy:** This site and repository are public. Anything committed under `assets/photos/` or included as messages will be viewable/downloadable by anyone with the URL. Review photo/message privacy before uploading.
+### Audio
 
-Music and voice are optional. In `RELATIONSHIP`, set:
+`src/core/audio.js` already supports:
 
-```js
-musicSrc: "./assets/audio/relationship.mp3",
-voiceSrc: "./assets/audio/voice-note.mp3",
-```
+- `assets/audio/relationship.mp3`;
+- `assets/audio/voice-note.mp3`;
+- separate low-volume SFX.
 
-Only after uploading the actual files. The player will otherwise stay hidden or disabled instead of pretending to play nonexistent media.
+No oscillator placeholder is used. Add files and pass their paths in `boot()` when the real track and voice are ready.
 
-## Running locally
+### Adding another year
+
+Add a new scene object to `SCENES` in `src/data/story.js`, assign a new `stage` value, and select one of the existing scene kinds or add a single renderer branch in `renderScene()`.
+
+## Run locally
 
 ```bash
 python3 -m http.server 4173
@@ -73,33 +75,17 @@ python3 -m http.server 4173
 
 Open `http://localhost:4173/`.
 
-Verify sources with:
+The site is GitHub Pages-compatible and has no build step. Before deployment, run:
 
 ```bash
-node scripts/smoke.mjs
 node --check app.js
+node --check src/data/story.js
+node --check src/core/quality.js
+node --check src/core/input.js
+node --check src/core/audio.js
 node --check src/webgl/world.js
-node --check src/visual/light-effects.js
 ```
 
-Use `?debug=1` for the WebGL FPS/draw-call HUD.
+## Audit notes
 
-## Customizing the love letters
-
-Edit `src/data/love-letters.js` to customize the seven envelope letters, twelve affectionate messages (котёнок, кошечка, заенька, лучик солнца, любимка, родная девочка…), two morning/night letters, six real-life promises, twelve chapter interludes, and the final long letter. They deliberately avoid inventing specific memories.
-
-All seven envelopes work as accessible tap-to-open letters. The native dialog supports Escape, keyboard navigation, and next/previous letters. `scripts/e2e.mjs` verifies these interactions with Playwright on 375×812, 390×844, 430×932 and 1440×900 viewports. CI uploads screenshots for review.
-
-To run the browser tests locally, install Playwright and its Chromium browser, then run `node scripts/e2e.mjs`.
-
-## Test devices
-
-Design for 360/375/390/414/430 px portrait phones, tablets and wide desktop layouts. Test iPhone Safari and Android Chrome before gifting. The initial light-theme revision was source-validated; **it is not yet a substitute for a real-device FPS and visual review**.
-
-## GitHub Pages
-
-This is a static `main` branch site. A push updates GitHub Pages automatically using the repository's deployment configuration.
-
-## Future anniversaries
-
-Add a scene in `src/data/story.js` and any required scene renderer in `app.js`. Keep private messages and photos as replaceable data, not embedded in CSS.
+The previous version had an always-running RAF, one mesh and geometry per petal, resize on every event, unconditional device-orientation input, global SVG turbulence, several fixed/composited layers, an unused gain node on every sound toggle, hardcoded content, no media pipeline, no WebGL fallback, and showed `13.10.2026` as the end date. These are addressed in the current architecture. The end date is now `18.11.2026`.
