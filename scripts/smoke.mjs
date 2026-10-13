@@ -1,61 +1,57 @@
 import assert from "node:assert/strict";
-import { readFileSync, existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { RELATIONSHIP, SCENES } from "../src/data/story.js";
-import { LOVE_LETTERS, TENDER_NOTES, DAY_NIGHT_LETTERS, PROMISES, FINAL_LETTER } from "../src/data/love-letters.js";
+import { RELATIONSHIP, SCENES, PHOTO_LIBRARY, PHOTO_PIPELINE, LETTER_MOMENTS } from "../src/data/story.js";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const read = path => readFileSync(resolve(root, path), "utf8");
 const files = [
-  "app.js", "src/data/story.js", "src/webgl/world.js",
+  "index.html", "styles.css", "app.js", "src/data/story.js", "src/webgl/world.js",
   "src/core/quality.js", "src/core/audio.js", "src/core/input.js",
-  "src/visual/light-effects.js", "src/data/love-letters.js", "src/interactive/love-experience.js"
 ];
+
 for (const path of files) {
   assert(existsSync(resolve(root, path)), `Missing ${path}`);
-  execFileSync(process.execPath, ["--check", resolve(root, path)], {stdio:"pipe"});
+  if (path.endsWith(".js")) execFileSync(process.execPath, ["--check", resolve(root, path)], { stdio: "pipe" });
 }
+
 const html = read("index.html");
-assert(html.includes("light.css"), "Light theme must be loaded");
-assert(html.includes("love.css"), "Love letter styles missing");
-assert(html.includes("app.js"), "Application entry must be loaded");
-const css = read("light.css");
-assert(css.includes(".prologue-scene"), "Real prologue selector missing");
-assert(css.includes("@media (max-width:480px)"), "Mobile layout styles missing");
-assert(css.includes("prefers-reduced-motion"), "Motion accessibility missing");
-assert(css.includes(".floating-petals"), "Decorative petals missing");
+const css = read("styles.css");
 const app = read("app.js");
-for (const match of app.matchAll(/from\s+"(\.\/[^"]+)"/g)) {
-  const path = match[1].replace(/^\.\//, "");
-  assert(existsSync(resolve(root, path)), `Broken import: ${path}`);
-}
-assert(app.includes("enhanceStory()"), "Decorative enhancement not initialized");
-assert(app.includes("await createBotanicalWorld"), "WebGL error handling must be async");
-assert(app.includes("initLoveExperience()"), "Letter interaction initialization missing");
-assert(app.includes('this.sections = $$(".scene")'), "Scene manager must iterate a list, not one element");
 const webgl = read("src/webgl/world.js");
-assert(webgl.includes("InstancedMesh"), "Flowers should be instanced");
-assert(webgl.includes("petalGeometry"), "Curved petal geometry missing");
-assert(!webgl.includes("SphereGeometry(.23"), "Old sphere flowers were not replaced");
+
+assert(html.includes('id="story"'), "Story mount missing");
+assert(html.includes('type="module"'), "ES module entry missing");
+assert(html.includes("styles.css"), "Stylesheet missing");
+assert(css.includes(".scene"), "Scene system missing");
+assert(css.includes("@media (min-width: 760px)"), "Desktop composition missing");
+assert(css.includes(".letter-note"), "Scattered letter treatment missing");
+assert(css.includes("prefers-reduced-motion"), "Motion accessibility missing");
+assert(app.includes("new Scheduler"), "Single scheduler missing");
+assert(app.includes("letterNote"), "Letter composition missing");
+assert(app.includes("createBotanicalWorld"), "WebGL world missing");
+assert(webgl.includes("InstancedMesh"), "Instanced botanical geometry missing");
+assert(!webgl.includes("SphereGeometry(.23"), "Old primitive flower geometry remains");
+
 const start = RELATIONSHIP.startDate.split(".").reverse().join("-");
 const end = RELATIONSHIP.anniversaryDate.split(".").reverse().join("-");
-const days = Math.round((Date.parse(end + "T00:00:00Z") - Date.parse(start + "T00:00:00Z")) / 86400000);
-assert.equal(days, RELATIONSHIP.days, "Anniversary date and number of days disagree");
-assert.equal(SCENES.length, 30, "Expected 30 story scenes");
-assert.equal(LOVE_LETTERS.length, 7, "All seven heartfelt letters required");
-assert(TENDER_NOTES.length >= 12, "All tenderness messages required");
-assert(PROMISES.length >= 6, "Promise list incomplete");
-assert(FINAL_LETTER.paragraphs.length >= 7, "Final long letter incomplete");
-assert(DAY_NIGHT_LETTERS.morning.paragraphs.length > 0 && DAY_NIGHT_LETTERS.night.paragraphs.length > 0);
-for(const kind of ["letters","tender","daynight","vows"]){
-  assert(SCENES.some(scene => scene.kind === kind), `Missing interactive chapter: ${kind}`);
-  assert(app.includes(`case "${kind}":`), `Renderer missing chapter: ${kind}`);
-}
-assert.equal(SCENES.find(scene => scene.id === "half-year").number, "181", "Six calendar months from 18 Nov 2024 is 181 days");
-assert.equal(new Set(SCENES.map(s => s.id)).size, SCENES.length, "Duplicate scene IDs");
-assert(SCENES.every(s => s.stage >= 0 && s.stage <= 1), "Invalid scene stage");
-assert(SCENES.every((scene,index)=> scene.index === String(index).padStart(2,"0")), "Chapter index drift");
-for (const scene of SCENES) assert(html.includes("id=\"story\""), "Story mount missing");
-console.log("MILANA smoke checks passed: 30 scenes, 7 letters, 12 notes, vows, selectors, JS, styles and dates.");
+const days = Math.round((Date.parse(`${end}T00:00:00Z`) - Date.parse(`${start}T00:00:00Z`)) / 86400000);
+assert.equal(days, RELATIONSHIP.days, "Anniversary date and day count disagree");
+assert.equal(RELATIONSHIP.startDate, "18.11.2024");
+assert.equal(RELATIONSHIP.anniversaryDate, "18.11.2026");
+assert.equal(RELATIONSHIP.days, 730);
+assert.equal(SCENES.length, 26, "Expected 26 story scenes");
+assert.equal(PHOTO_LIBRARY.length, 18, "The compact archive should contain 18 unique photos");
+assert.equal(PHOTO_PIPELINE.uniquePhotos, 18);
+assert.equal(LETTER_MOMENTS.length, 7, "Expected seven scattered letter moments");
+assert.equal(new Set(SCENES.map(scene => scene.id)).size, SCENES.length, "Duplicate scene IDs");
+assert(SCENES.every((scene, index) => scene.index === String(index).padStart(2, "0")), "Chapter index drift");
+assert(SCENES.every(scene => scene.stage >= 0 && scene.stage <= 1), "Invalid scene stage");
+const displaySlots = SCENES.flatMap(scene => scene.slots || []);
+assert(displaySlots.length <= 45, `Too many unique display slots: ${displaySlots.length}`);
+assert.equal(new Set(PHOTO_LIBRARY.map(photo => photo.id)).size, PHOTO_LIBRARY.length, "Duplicate photo IDs");
+assert(PHOTO_LIBRARY.every(photo => photo.id && photo.label && photo.category), "Incomplete photo catalog entry");
+
+console.log(`MILANA smoke checks passed: ${SCENES.length} scenes, ${PHOTO_LIBRARY.length} unique photos, ${LETTER_MOMENTS.length} scattered letters, dates, JS and CSS.`);
