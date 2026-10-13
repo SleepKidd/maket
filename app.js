@@ -1,4 +1,4 @@
-import { RELATIONSHIP, SCENES, SECRETS, MESSAGE_SLOTS, PLACE_SLOTS, LETTER_MOMENTS } from "./src/data/story.js";
+import { RELATIONSHIP, SCENES, SECRETS, MESSAGE_SLOTS, PLACE_SLOTS, LETTER_MOMENTS, PHOTO_LIBRARY } from "./src/data/story.js";
 import { QualityManager, Scheduler } from "./src/core/quality.js";
 import { InputManager } from "./src/core/input.js";
 import { AudioManager } from "./src/core/audio.js";
@@ -26,7 +26,8 @@ const PHOTO_LABELS = {
 function photoSlot(item, className = "") {
   const ratio = item.ratio || "4 / 5";
   const category = PHOTO_LABELS[item.category] || item.category || "фотография";
-  return `<article class="photo-slot ${className}" style="--ratio:${ratio}" data-photo-slot data-photo-id="${esc(item.id || item.label)}" data-category="${esc(item.category)}" tabindex="0" role="img" aria-label="${esc(item.label)}"><span class="slot-index">${esc((item.id || "00").slice(-2))}</span><span class="slot-label">${esc(item.label)}</span><span class="slot-meta">${esc(category)}</span></article>`;
+  const image = item.src ? `<img class="photo-image" data-src="${esc(item.src)}" alt="" aria-hidden="true" />` : "";
+  return `<article class="photo-slot ${className}" style="--ratio:${ratio}" data-photo-slot data-photo-id="${esc(item.id || item.label)}" data-category="${esc(item.category)}" tabindex="0" role="img" aria-label="${esc(item.label)}">${image}<span class="slot-index">${esc((item.id || "00").slice(-2))}</span><span class="slot-label">${esc(item.label)}</span><span class="slot-meta">${esc(category)}</span></article>`;
 }
 
 function photoSlots(items = [], className = "") { return items.map((item) => photoSlot(item, className)).join(""); }
@@ -45,6 +46,10 @@ function letterNote(id, className = "") {
   return `<aside class="letter-note ${className}" data-letter-note="${esc(letter.id)}"><div class="letter-note-top"><span>письмо ${esc(letter.number)}</span><span>из архива</span></div><h3>${esc(letter.title)}</h3><p>${esc(letter.text)}</p><span class="letter-note-mark">читать между кадрами ↘</span></aside>`;
 }
 
+function photoById(id, fallback = {}) {
+  return PHOTO_LIBRARY.find((item) => item.id === id) || fallback;
+}
+
 function renderScene(scene) {
   const common = `class="scene ${scene.kind}-scene scene--${scene.id}" id="${scene.id}" data-scene="${scene.id}" data-stage="${scene.stage}" data-index="${scene.index}"`;
   switch (scene.kind) {
@@ -53,7 +58,7 @@ function renderScene(scene) {
     case "before":
       return `<section ${common}>${sceneKicker(scene, "Когда ещё не было «нас»")}${sceneCopy(scene)}<div class="photo-row">${photoSlots(scene.slots)}</div>${letterNote("before-us", "letter-note--right")}<p class="scene-note">Расстояние исчезает во время scroll — drag не обязателен</p></section>`;
     case "date":
-      return `<section ${common}>${sceneKicker(scene, "начало") }<div class="scene-copy scene-copy--center"><p class="eyebrow">${esc(scene.kicker || scene.chapter || "Тот самый день")}</p><div class="date-number">18<span>.</span>11<span>.</span>24</div><p>${esc(scene.copy)}</p><button class="memory-trigger" type="button" data-secret="${esc(SECRETS[0].text)}">открыть воспоминание ↗</button></div>${photoSlot({ id: "beginning-01", label: "самый важный кадр начала", category: "beginning", ratio: "4 / 5" }, "date-photo")}${letterNote("first-day", "letter-note--left")}<p class="scene-note">Дата остаётся в центре, а личный текст появится после архива</p></section>`;
+      return `<section ${common}>${sceneKicker(scene, "начало") }<div class="scene-copy scene-copy--center"><p class="eyebrow">${esc(scene.kicker || scene.chapter || "Тот самый день")}</p><div class="date-number">18<span>.</span>11<span>.</span>24</div><p>${esc(scene.copy)}</p><button class="memory-trigger" type="button" data-secret="${esc(SECRETS[0].text)}">открыть воспоминание ↗</button></div>${photoSlot(photoById("beginning-01", { id: "beginning-01", label: "самый важный кадр начала", category: "beginning", ratio: "4 / 5" }), "date-photo")}${letterNote("first-day", "letter-note--left")}<p class="scene-note">Дата остаётся в центре, а личный текст появится после архива</p></section>`;
     case "tunnel":
       return `<section ${common}>${sceneKicker(scene, "вертикальный photo tunnel")}${sceneCopy(scene)}<div class="tunnel">${photoSlots(scene.slots)}</div></section>`;
     case "film":
@@ -85,13 +90,13 @@ function renderScene(scene) {
     case "universe":
       return `<section ${common}>${sceneKicker(scene, "our universe")}${sceneCopy(scene)}<div class="universe-corridor">${photoSlots(scene.slots)}</div></section>`;
     case "compare":
-      return `<section ${common}>${sceneKicker(scene, "touch slider")}${sceneCopy(scene)}<div class="compare-frame" data-compare><div class="compare-image compare-image--then">${photoSlot({ label: "самая ранняя совместная", category: "then-now" })}</div><div class="compare-image compare-image--now">${photoSlot({ label: "одна из последних", category: "then-now" })}</div><div class="compare-divider" data-compare-divider tabindex="0" role="slider" aria-label="Сравнить тогда и сейчас" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"><span>↔</span></div></div><div class="compare-caption"><span>тогда</span><strong>730 DAYS</strong><span>сейчас</span></div></section>`;
+      return `<section ${common}>${sceneKicker(scene, "touch slider")}${sceneCopy(scene)}<div class="compare-frame" data-compare><div class="compare-image compare-image--then">${photoSlot(photoById("beginning-01", { label: "самая ранняя совместная", category: "then-now" }))}</div><div class="compare-image compare-image--now">${photoSlot(photoById("finale-01", { label: "одна из последних", category: "then-now" }))}</div><div class="compare-divider" data-compare-divider tabindex="0" role="slider" aria-label="Сравнить тогда и сейчас" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"><span>↔</span></div></div><div class="compare-caption"><span>тогда</span><strong>730 DAYS</strong><span>сейчас</span></div></section>`;
     case "voice":
       return `<section ${common}>${sceneKicker(scene, "тишина")}${sceneCopy(scene)}<button class="voice-button" id="voiceButton" type="button"><span>▶</span> включить голосовое</button><div class="voice-wave" data-voice-wave>${Array.from({ length: 15 }, () => "<i></i>").join("")}</div>${letterNote("voice", "letter-note--right")}</section>`;
     case "letter":
       return `<section ${common}>${sceneKicker(scene, "700–1500 слов")}<div class="letter-wrap"><p class="eyebrow">${esc(scene.kicker)}</p><h2>${esc(scene.title)}</h2><p class="letter-copy">Здесь будет настоящее письмо — не выдуманный текст из генератора, а твои слова: факты, смешные детали, неловкие моменты и всё то, что за два года стало вашим.</p><p class="letter-copy">Когда появится архив, этот экран превратится в длинный спокойный монолог с максимальной читаемостью и почти полной тишиной вокруг.</p><div class="letter-sign">Я люблю тебя.<br><span>И это только первые два года.</span></div><button class="replay-button" id="replayButton" type="button">↻ replay <span>${RELATIONSHIP.startDate} — ∞</span></button></div></section>`;
     case "finale":
-      return `<section ${common}>${sceneKicker(scene, "полное цветение")}<div class="finale-number">${RELATIONSHIP.days}</div><p class="finale-subtitle">дней с тобой</p>${photoSlot({ label: "свежая совместная фотография", category: "finale" }, "finale-photo")}<div class="finale-line"><span>Два года.</span><strong>${esc(scene.title)}</strong><small>${esc(scene.accent)}</small></div></section>`;
+      return `<section ${common}>${sceneKicker(scene, "полное цветение")}<div class="finale-number">${RELATIONSHIP.days}</div><p class="finale-subtitle">дней с тобой</p>${photoSlot(photoById("finale-01", { label: "свежая совместная фотография", category: "finale" }), "finale-photo")}<div class="finale-line"><span>Два года.</span><strong>${esc(scene.title)}</strong><small>${esc(scene.accent)}</small></div></section>`;
     case "secret":
       return `<section ${common}>${sceneKicker(scene, "секретный эпилог")}<div class="scene-copy scene-copy--center"><p class="eyebrow">${esc(scene.kicker)}</p><h2>${esc(scene.title)}<br><em>${esc(scene.accent)}</em></h2><p>${esc(scene.copy)}</p><p class="secret-count" data-secret-count>0 / ${SECRETS.length} найдено</p></div></section>`;
     default:
@@ -128,7 +133,11 @@ class SceneManager {
 class AssetManager {
   constructor() {
     this.observer = new IntersectionObserver((entries) => entries.forEach((entry) => { if (entry.isIntersecting) this.hydrate(entry.target); }), { rootMargin: "180% 0px" });
-    $$('[data-src]').forEach((element) => this.observer.observe(element));
+    $$('[data-src]').forEach((element) => {
+      element.addEventListener("load", () => { element.classList.add("is-loaded"); element.closest(".photo-slot")?.classList.add("has-image"); }, { once: true, passive: true });
+      element.addEventListener("error", () => { element.hidden = true; element.closest(".photo-slot")?.classList.add("asset-missing"); }, { once: true, passive: true });
+      this.observer.observe(element);
+    });
   }
 
   hydrate(element) {

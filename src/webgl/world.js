@@ -43,18 +43,18 @@ export function createBotanicalWorld(canvas, quality) {
   scene.add(rig, foreground);
   rig.add(botany);
 
-  const ambient = new THREE.AmbientLight(0x6c5260, 1.3);
-  const warm = new THREE.PointLight(0xc68472, 8, 15, 2);
+  const ambient = new THREE.AmbientLight(0xfff4ea, 1.65);
+  const warm = new THREE.PointLight(0xffc7a7, 7, 15, 2);
   warm.position.set(2.5, 2.8, 3.2);
-  const wine = new THREE.PointLight(0x651f3b, 6, 12, 2);
+  const wine = new THREE.PointLight(0x9f7181, 4.5, 12, 2);
   wine.position.set(-3.5, -1.5, -1);
   scene.add(ambient, warm, wine);
 
   const petalGeometry = createPetalGeometry();
   const leafGeometry = new THREE.PlaneGeometry(.38, .72, 1, 2);
-  const petalMaterial = new THREE.MeshStandardMaterial({ color: 0xd8a2a0, roughness: .54, metalness: .02, emissive: 0x2a0a17, emissiveIntensity: .32, side: THREE.DoubleSide });
-  const creamMaterial = new THREE.MeshStandardMaterial({ color: 0xeadcc9, roughness: .5, metalness: .02, emissive: 0x2d1716, emissiveIntensity: .24, side: THREE.DoubleSide });
-  const leafMaterial = new THREE.MeshStandardMaterial({ color: 0x334332, roughness: .84, metalness: 0, side: THREE.DoubleSide });
+  const petalMaterial = new THREE.MeshStandardMaterial({ color: 0xd98f9f, roughness: .54, metalness: .02, emissive: 0x6b3445, emissiveIntensity: .18, side: THREE.DoubleSide });
+  const creamMaterial = new THREE.MeshStandardMaterial({ color: 0xf3dfcf, roughness: .5, metalness: .02, emissive: 0x8b6257, emissiveIntensity: .12, side: THREE.DoubleSide });
+  const leafMaterial = new THREE.MeshStandardMaterial({ color: 0x789276, roughness: .84, metalness: 0, side: THREE.DoubleSide });
   const petalInstances = new THREE.InstancedMesh(petalGeometry, petalMaterial, quality.petals);
   const creamInstances = new THREE.InstancedMesh(petalGeometry, creamMaterial, Math.max(8, Math.floor(quality.petals * .45)));
   const leafInstances = new THREE.InstancedMesh(leafGeometry, leafMaterial, quality.leaves);
@@ -66,7 +66,7 @@ export function createBotanicalWorld(canvas, quality) {
   const stemPositions = new Float32Array(quality.flowers * 6);
   const stemGeometry = new THREE.BufferGeometry();
   stemGeometry.setAttribute("position", new THREE.BufferAttribute(stemPositions, 3));
-  const stems = new THREE.LineSegments(stemGeometry, new THREE.LineBasicMaterial({ color: 0x3c5135, transparent: true, opacity: .82 }));
+  const stems = new THREE.LineSegments(stemGeometry, new THREE.LineBasicMaterial({ color: 0x789276, transparent: true, opacity: .82 }));
   botany.add(stems);
 
   const dustCount = Math.max(42, Math.floor(quality.petals * .78));
@@ -78,7 +78,7 @@ export function createBotanicalWorld(canvas, quality) {
   }
   const dustGeometry = new THREE.BufferGeometry();
   dustGeometry.setAttribute("position", new THREE.BufferAttribute(dustPositions, 3));
-  const dust = new THREE.Points(dustGeometry, new THREE.PointsMaterial({ color: 0xd8c0a6, size: quality.profile === "low" ? .022 : .03, transparent: true, opacity: .5, depthWrite: false }));
+  const dust = new THREE.Points(dustGeometry, new THREE.PointsMaterial({ color: 0xc29b86, size: quality.profile === "low" ? .022 : .03, transparent: true, opacity: .5, depthWrite: false }));
   foreground.add(dust);
 
   const looseCount = Math.max(8, Math.floor(quality.petals * .28));
@@ -92,7 +92,7 @@ export function createBotanicalWorld(canvas, quality) {
     looseSeeds.push({ phase: Math.random() * 10, speed: .1 + Math.random() * .18 });
   }
   looseGeometry.setAttribute("position", new THREE.BufferAttribute(loosePositions, 3));
-  const loosePetals = new THREE.Points(looseGeometry, new THREE.PointsMaterial({ color: 0xe2b9ae, size: quality.profile === "low" ? .038 : .052, transparent: true, opacity: .68, depthWrite: false }));
+  const loosePetals = new THREE.Points(looseGeometry, new THREE.PointsMaterial({ color: 0xe4a9b6, size: quality.profile === "low" ? .038 : .052, transparent: true, opacity: .68, depthWrite: false }));
   foreground.add(loosePetals);
 
   const flowers = Array.from({ length: quality.flowers }, (_, index) => ({
@@ -224,8 +224,8 @@ export function createBotanicalWorld(canvas, quality) {
   function setScene(stage, sceneId = "") {
     targetStage = clamp(stage, .03, 1);
     const isFinal = sceneId === "days" || sceneId === "finale";
-    petalMaterial.color.set(isFinal ? 0xe2b5aa : sceneId === "messages" ? 0x8e5060 : 0xd8a2a0);
-    creamMaterial.color.set(isFinal ? 0xf1e2c7 : 0xeadcc9);
+    petalMaterial.color.set(isFinal ? 0xde8d9e : sceneId === "messages" ? 0xb77a89 : 0xd98f9f);
+    creamMaterial.color.set(isFinal ? 0xffe7c7 : 0xf3dfcf);
     warm.intensity = isFinal ? 12 : sceneId === "letter" ? 3.5 : 8;
   }
 

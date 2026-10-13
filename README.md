@@ -40,14 +40,14 @@ src/webgl/world.js             shared-geometry instanced botanical WebGL scene
 
 Edit `src/data/story.js` first. The file contains the scenes, photo categories, real-content slots, message slots, places, and hidden memories. It deliberately uses placeholders instead of inventing personal facts.
 
-The visual system is рассчитана на **15–20 уникальных фотографий**. Сейчас в каталоге 18 photo IDs. Они переиспользуются в разных монтажных формах — крупный кадр, вертикальный тоннель, плёнка, Polaroid, portrait stack, Then / Now и финальный кадр. Поэтому история остаётся насыщенной, но не требует загрузить сотню снимков.
+The visual system is рассчитана ровно на **15 уникальных фотографий**. Готовый каталог и имена файлов находятся в `assets/photos/README.md`, а 15 записей подключены в `src/data/story.js`. Они переиспользуются в разных монтажных формах — крупный кадр, вертикальный тоннель, плёнка, Polaroid, portrait stack, Then / Now и финальный кадр. Поэтому история остаётся насыщенной, но не требует загружать сотню снимков.
 
 ### Photos
 
 The data model is ready for:
 
-- 15–20 source photos;
-- 15–20 unique final photos;
+- ровно 15 source photos;
+- 15 unique final photos;
 - 35–45 display instances through intentional reuse;
 - categories: `before-us`, `beginning`, `one-month`, `three-months`, `half-year`, `everyday`, `places`, `first-year`, `second-year`, `milana`, `us`, `then-now`, `finale`.
 
