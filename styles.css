@@ -23,13 +23,9 @@ button { cursor: pointer; }
 a { text-decoration: none; }
 .site-shell { position: relative; isolation: isolate; }
 #world, .world-fallback { position: fixed; inset: 0; width: 100vw; height: 100svh; pointer-events: none; }
-#world { z-index: -5; display: block; opacity: .98; }
-.world-fallback { z-index: -4; overflow: hidden; background: radial-gradient(circle at 50% 42%, rgba(91, 35, 52, .22), transparent 35%), radial-gradient(circle at 20% 90%, rgba(74, 26, 46, .14), transparent 32%); opacity: .24; }
-.world-fallback i { position: absolute; width: 22vw; height: 58vh; border-left: 1px solid rgba(182, 107, 122, .48); border-radius: 50%; transform-origin: bottom; }
-.world-fallback i:nth-child(1) { left: 6%; bottom: -10%; transform: rotate(-18deg); }
-.world-fallback i:nth-child(2) { left: 46%; bottom: -12%; transform: rotate(4deg); }
-.world-fallback i:nth-child(3) { right: 3%; bottom: -8%; transform: rotate(23deg); }
-.world-fallback span { position: absolute; left: 50%; bottom: 30%; width: 11rem; height: 11rem; border: 1px solid rgba(216, 197, 180, .33); border-radius: 50%; transform: translateX(-50%); box-shadow: 0 0 70px rgba(182, 107, 122, .18); }
+#world { z-index: -5; display: block; opacity: 1; mix-blend-mode: normal; }
+.world-fallback { z-index: -4; overflow: hidden; background: transparent; opacity: 1; }
+.reference-flower-fallback { position: absolute; top: 9%; left: 50%; width: min(92vw, 540px); height: auto; aspect-ratio: 1; object-fit: contain; transform: translateX(-50%); }
 .grain { position: fixed; inset: 0; z-index: 30; pointer-events: none; opacity: .08; background-image: radial-gradient(rgba(239, 231, 221, .24) .45px, transparent .7px); background-size: 5px 5px; }
 .topbar { position: fixed; z-index: 40; top: 0; left: 0; right: 0; display: flex; align-items: center; justify-content: space-between; height: 64px; padding: max(14px, env(safe-area-inset-top)) 20px 8px; color: var(--muted); font: 10px var(--mono); letter-spacing: .13em; text-transform: uppercase; pointer-events: none; }
 .topbar > * { pointer-events: auto; }
@@ -275,6 +271,7 @@ body.is-reduced-motion *, body.is-reduced-motion *::before, body.is-reduced-moti
   .hero-title { font-size: clamp(100px, 14vw, 230px); }
   .hero-date { font-size: 11px; }
   .hero-days { font-size: 11px; }
+  .reference-flower-fallback { top: 12%; left: auto; right: 8%; width: min(43vw, 620px); transform: none; }
   .before-scene .scene-copy { margin-left: 6vw; }
   .before-scene .photo-row { width: min(850px, 78vw); min-height: 450px; margin: 35px auto 0; }
   .before-scene .photo-slot { width: 33%; }
@@ -330,10 +327,8 @@ body.is-reduced-motion *, body.is-reduced-motion *::before, body.is-reduced-moti
 
 html { background: var(--bg); color-scheme: light; }
 body { background: var(--bg); color: var(--ivory); }
-#world { opacity: .82; mix-blend-mode: multiply; }
-.world-fallback { background: radial-gradient(circle at 50% 42%, rgba(214, 139, 157, .18), transparent 35%), radial-gradient(circle at 20% 90%, rgba(134, 171, 133, .16), transparent 32%); opacity: .52; }
-.world-fallback i { border-left-color: rgba(180, 95, 115, .36); }
-.world-fallback span { border-color: rgba(145, 109, 103, .3); box-shadow: 0 0 70px rgba(198, 133, 148, .18); }
+#world { opacity: 1; mix-blend-mode: normal; }
+.world-fallback { background: transparent; opacity: 1; }
 .grain { opacity: .055; background-image: radial-gradient(rgba(74, 51, 53, .24) .45px, transparent .7px); }
 .topbar { color: var(--muted); }
 .wordmark { color: var(--ivory); }

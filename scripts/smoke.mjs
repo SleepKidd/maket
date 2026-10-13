@@ -32,13 +32,12 @@ assert(css.includes("prefers-reduced-motion"), "Motion accessibility missing");
 assert(app.includes("new Scheduler"), "Single scheduler missing");
 assert(app.includes("letterNote"), "Letter composition missing");
 assert(app.includes("createBotanicalWorld"), "WebGL world missing");
-assert(webgl.includes("InstancedMesh"), "Instanced botanical geometry missing");
-assert(webgl.includes("createVibePetalGeometry"), "Reference flower geometry missing");
-assert(webgl.includes("writeVibeFlower"), "Reference flower animation missing");
-assert(webgl.includes("MeshPhysicalMaterial"), "Physical flower material missing");
+assert(webgl.includes("MeshBasicMaterial"), "Original reference material missing");
+assert(webgl.includes("assets/3d/source/10650280.jpg"), "Original flower asset missing from WebGL world");
+assert(webgl.includes("createReferenceFlower"), "Original flower plane missing");
 assert(webgl.includes("createHeartGeometry"), "3D heart geometry missing");
 assert(webgl.includes("setScrollProgress"), "Scroll-driven heart rotation missing");
-assert(!webgl.includes("SphereGeometry(.23"), "Old primitive flower geometry remains");
+assert(!webgl.includes("createVibePetalGeometry"), "Procedural replacement flower remains");
 
 const start = RELATIONSHIP.startDate.split(".").reverse().join("-");
 const end = RELATIONSHIP.anniversaryDate.split(".").reverse().join("-");
@@ -47,15 +46,16 @@ assert.equal(days, RELATIONSHIP.days, "Anniversary date and day count disagree")
 assert.equal(RELATIONSHIP.startDate, "18.11.2024");
 assert.equal(RELATIONSHIP.anniversaryDate, "18.11.2026");
 assert.equal(RELATIONSHIP.days, 730);
-assert.equal(SCENES.length, 26, "Expected 26 story scenes");
+assert.equal(SCENES.length, 15, "Expected 15 photo-led story scenes");
 assert.equal(PHOTO_LIBRARY.length, 15, "The compact archive should contain 15 unique photos");
 assert.equal(PHOTO_PIPELINE.uniquePhotos, 15);
+assert.equal(PHOTO_PIPELINE.displayInstances, "15");
 assert.equal(LETTER_MOMENTS.length, 7, "Expected seven scattered letter moments");
 assert.equal(new Set(SCENES.map(scene => scene.id)).size, SCENES.length, "Duplicate scene IDs");
 assert(SCENES.every((scene, index) => scene.index === String(index).padStart(2, "0")), "Chapter index drift");
 assert(SCENES.every(scene => scene.stage >= 0 && scene.stage <= 1), "Invalid scene stage");
 const displaySlots = SCENES.flatMap(scene => scene.slots || []);
-assert(displaySlots.length <= 45, `Too many unique display slots: ${displaySlots.length}`);
+assert.equal(displaySlots.length, 15, `The photo-led concept must expose exactly 15 slots: ${displaySlots.length}`);
 assert.equal(new Set(PHOTO_LIBRARY.map(photo => photo.id)).size, PHOTO_LIBRARY.length, "Duplicate photo IDs");
 assert(PHOTO_LIBRARY.every(photo => photo.id && photo.label && photo.category), "Incomplete photo catalog entry");
 

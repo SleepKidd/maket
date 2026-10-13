@@ -1,8 +1,8 @@
-import { RELATIONSHIP, SCENES, SECRETS, MESSAGE_SLOTS, PLACE_SLOTS, LETTER_MOMENTS, PHOTO_LIBRARY } from "./src/data/story.js?v=editorial-clean";
+import { RELATIONSHIP, SCENES, SECRETS, MESSAGE_SLOTS, PLACE_SLOTS, LETTER_MOMENTS, PHOTO_LIBRARY } from "./src/data/story.js?v=photo-15-concept";
 import { QualityManager, Scheduler } from "./src/core/quality.js";
 import { InputManager } from "./src/core/input.js";
 import { AudioManager } from "./src/core/audio.js";
-import { createBotanicalWorld } from "./src/webgl/world.js?v=positive-vibe-3d";
+import { createBotanicalWorld } from "./src/webgl/world.js?v=photo-15-reference";
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -54,11 +54,11 @@ function renderScene(scene) {
   const common = `class="scene ${scene.kind}-scene scene--${scene.id}" id="${scene.id}" data-scene="${scene.id}" data-stage="${scene.stage}" data-index="${scene.index}"`;
   switch (scene.kind) {
     case "prologue":
-      return `<section ${common}><div class="hero-copy"><p class="eyebrow">${esc(scene.kicker)}</p><h1 class="hero-title">MILANA<span>— TWO YEARS</span></h1><p class="hero-date">${RELATIONSHIP.startDate}<i>—</i>${RELATIONSHIP.anniversaryDate}</p><p class="hero-days">${RELATIONSHIP.days} DAYS</p><button class="begin-button" id="beginButton" type="button"><span class="button-dot"></span><span>Коснись, чтобы начать</span><span class="button-arrow">↘</span></button><p class="hero-hint">Свет и музыка — после касания</p></div><div class="hero-index">01<span>из двух лет</span></div><p class="scene-note">листай историю</p></section>`;
+      return `<section ${common}><div class="hero-copy"><p class="eyebrow">${esc(scene.kicker)}</p><h1 class="hero-title">MILANA<span>— TWO YEARS</span></h1><p class="hero-date">${RELATIONSHIP.startDate}<i>—</i>${RELATIONSHIP.anniversaryDate}</p><p class="hero-days">${RELATIONSHIP.days} DAYS · 15 КАДРОВ</p><button class="begin-button" id="beginButton" type="button"><span class="button-dot"></span><span>Коснись, чтобы начать</span><span class="button-arrow">↘</span></button><p class="hero-hint">Свет и музыка — после касания</p></div><div class="hero-index">15<span>кадров одной истории</span></div><p class="scene-note">листай историю</p></section>`;
     case "before":
       return `<section ${common}>${sceneKicker(scene, "Когда ещё не было «нас»")}${sceneCopy(scene)}<div class="photo-row">${photoSlots(scene.slots)}</div>${letterNote("before-us", "letter-note--right")}<p class="scene-note">две линии сходятся</p></section>`;
     case "date":
-      return `<section ${common}>${sceneKicker(scene, "начало") }<div class="scene-copy scene-copy--center"><p class="eyebrow">${esc(scene.kicker || scene.chapter || "Тот самый день")}</p><div class="date-number">18<span>.</span>11<span>.</span>24</div><p>${esc(scene.copy)}</p><button class="memory-trigger" type="button" data-secret="${esc(SECRETS[0].text)}">открыть воспоминание ↗</button></div>${photoSlot(photoById("beginning-01", { id: "beginning-01", label: "самый важный кадр начала", category: "beginning", ratio: "4 / 5" }), "date-photo")}${letterNote("first-day", "letter-note--left")}<p class="scene-note">дата, с которой всё началось</p></section>`;
+      return `<section ${common}>${sceneKicker(scene, "начало") }<div class="scene-copy scene-copy--center"><p class="eyebrow">${esc(scene.kicker || scene.chapter || "Тот самый день")}</p><div class="date-number">18<span>.</span>11<span>.</span>24</div><p>${esc(scene.copy)}</p><button class="memory-trigger" type="button" data-secret="${esc(SECRETS[0].text)}">открыть воспоминание ↗</button></div>${photoSlot(scene.slots?.[0] || { id: "beginning-01", label: "самый важный кадр начала", category: "beginning", ratio: "4 / 5" }, "date-photo")}${letterNote("first-day", "letter-note--left")}<p class="scene-note">дата, с которой всё началось</p></section>`;
     case "tunnel":
       return `<section ${common}>${sceneKicker(scene, "первые кадры")}${sceneCopy(scene)}<div class="tunnel">${photoSlots(scene.slots)}</div></section>`;
     case "film":
