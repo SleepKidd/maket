@@ -3,6 +3,7 @@ import { QualityManager, Scheduler } from "./src/core/quality.js";
 import { InputManager } from "./src/core/input.js";
 import { AudioManager } from "./src/core/audio.js";
 import { createBotanicalWorld } from "./src/webgl/world.js";
+import { enhanceStory } from "./src/visual/light-effects.js";
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -26,7 +27,8 @@ const PHOTO_LABELS = {
 function photoSlot(item, className = "") {
   const ratio = item.ratio || "4 / 5";
   const category = PHOTO_LABELS[item.category] || item.category || "фотография";
-  return `<article class="photo-slot ${className}" style="--ratio:${ratio}" data-photo-slot data-category="${esc(item.category)}" tabindex="0" role="img" aria-label="${esc(item.label)}"><span class="slot-label">${esc(item.label)}</span><span class="slot-meta">${esc(category)}</span></article>`;
+  const image = item.src ? `<img src="${esc(item.src)}" alt="${esc(item.alt || item.label)}" loading="lazy" decoding="async" width="${Number(item.width) || 800}" height="${Number(item.height) || 1000}" />` : "";
+  return `<article class="photo-slot ${image ? "has-image" : ""} ${className}" style="--ratio:${ratio}" data-photo-slot data-category="${esc(item.category)}" tabindex="0" role="img" aria-label="${esc(item.label)}">${image}<span class="slot-label">${esc(item.label)}</span><span class="slot-meta">${esc(category)}</span></article>`;
 }
 
 function photoSlots(items = [], className = "") { return items.map((item) => photoSlot(item, className)).join(""); }
@@ -93,7 +95,7 @@ function renderScene(scene) {
   }
 }
 
-function renderStory() { $("#story").innerHTML = SCENES.map(renderScene).join(""); }
+function renderStory() { $("#story").innerHTML = SCENES.map(renderScene).join(""); enhanceStory(); }
 
 class SceneManager {
   constructor({ world }) {
@@ -170,8 +172,7 @@ function setupInteractions({ audio, input }) {
     const played = await audio.start();
     if (!played) showToast("Аудио-слот готов — добавим настоящий трек после получения файла");
     if (navigator.vibrate) navigator.vibrate(10);
-    const tiltGranted = await input.requestTilt();
-    if (tiltGranted) input.enableTilt();
+    /* Motion sensors are optional: normal touch interaction works without permission prompts. */
   });
 
   $("#soundToggle").addEventListener("click", () => {
@@ -256,14 +257,15 @@ function boot() {
   const input = new InputManager({ onChange: (state) => world?.setPointer(state.x, state.y, state.velocity) });
   const audio = new AudioManager();
   const sceneManager = new SceneManager({ world });
+  let lastQuality = quality.getName();
   new AssetManager();
   const { showToast } = setupInteractions({ audio, input });
   setupResize(world);
   const updateDebug = setupDebug({ quality, world });
-  const scheduler = new Scheduler({ quality, onFrame: (now, delta) => { input.update(); world?.update(now, delta); updateDebug(now); } });
+  const scheduler = new Scheduler({ quality, onFrame: (now, delta) => { input.update(); const nextQuality = quality.getName(); if (nextQuality !== lastQuality) { lastQuality = nextQuality; world?.setQuality({ ...quality.get(), profile: quality.profile }); } world?.update(now, delta); updateDebug(now); } });
   scheduler.start();
   window.addEventListener("pagehide", () => { scheduler.stop(); sceneManager.destroy(); input.destroy(); audio.destroy(); world?.dispose(); }, { once: true, passive: true });
-  if (!world) showToast("3D отключён браузером — включена лёгкая botanical fallback-сцена");
+  if (!world) showToast("Включена облегчённая цветочная композиция");
   window.__MILANA_DEBUG__ = { quality, world, scheduler, sceneManager };
 }
 
