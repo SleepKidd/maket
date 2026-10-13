@@ -213,7 +213,7 @@ export function createBotanicalWorld(canvas, initialQuality){
     if(!next)return;
     quality={...quality,...next};
     renderer.setPixelRatio(quality.pixelRatio);
-    resize();
+    renderer.setSize(width,height,false);
   }
   function setActive(value){active=Boolean(value)}
   function stats(){return{drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,textures:renderer.info.memory.textures}}
