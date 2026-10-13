@@ -271,7 +271,8 @@ async function boot() {
   const updateDebug = setupDebug({ quality, world });
   const scheduler = new Scheduler({ quality, onFrame: (now, delta) => { input.update(); const nextQuality = quality.getName(); if (nextQuality !== lastQuality) { lastQuality = nextQuality; world?.setQuality({ ...quality.get(), profile: quality.profile }); } world?.update(now, delta); updateDebug(now); } });
   scheduler.start();
-  window.addEventListener("pagehide", () => { scheduler.stop(); sceneManager.destroy(); input.destroy(); audio.destroy(); world?.dispose(); }, { once: true, passive: true });
+  window.addEventListener("pagehide", (event) => { scheduler.stop(); if (!event.persisted) { sceneManager.destroy(); input.destroy(); audio.destroy(); world?.dispose(); } }, { passive: true });
+  window.addEventListener("pageshow", (event) => { if (event.persisted) { world?.resize(); scheduler.start(); } }, { passive: true });
   if (!world) showToast("Включена облегчённая цветочная композиция");
   window.__MILANA_DEBUG__ = { quality, world, scheduler, sceneManager };
 }
