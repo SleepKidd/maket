@@ -66,7 +66,7 @@ export function createBotanicalWorld(canvas, quality) {
 
   let referenceFlower;
   const referenceTexture = new THREE.TextureLoader().load(
-    "./assets/3d/source/10650280.jpg",
+    "./assets/3d/source/10650280.jpg?v=photo-15-asset-final",
     (texture) => {
       texture.colorSpace = THREE.SRGBColorSpace;
       texture.needsUpdate = true;

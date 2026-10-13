@@ -33,7 +33,7 @@ assert(app.includes("new Scheduler"), "Single scheduler missing");
 assert(app.includes("letterNote"), "Letter composition missing");
 assert(app.includes("createBotanicalWorld"), "WebGL world missing");
 assert(webgl.includes("MeshBasicMaterial"), "Original reference material missing");
-assert(webgl.includes("assets/3d/source/10650280.jpg"), "Original flower asset missing from WebGL world");
+assert(webgl.includes("assets/3d/source/10650280.jpg?v=photo-15-asset-final"), "Original flower asset missing from WebGL world");
 assert(webgl.includes("createReferenceFlower"), "Original flower plane missing");
 assert(webgl.includes("createHeartGeometry"), "3D heart geometry missing");
 assert(webgl.includes("setScrollProgress"), "Scroll-driven heart rotation missing");
