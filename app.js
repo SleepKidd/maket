@@ -1,4 +1,4 @@
-import { RELATIONSHIP, SCENES, SECRETS, MESSAGE_SLOTS, PLACE_SLOTS, LETTER_MOMENTS, PHOTO_LIBRARY } from "./src/data/story.js";
+import { RELATIONSHIP, SCENES, SECRETS, MESSAGE_SLOTS, PLACE_SLOTS, LETTER_MOMENTS, PHOTO_LIBRARY } from "./src/data/story.js?v=editorial-clean";
 import { QualityManager, Scheduler } from "./src/core/quality.js";
 import { InputManager } from "./src/core/input.js";
 import { AudioManager } from "./src/core/audio.js";
