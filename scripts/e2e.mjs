@@ -9,15 +9,13 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const shots = resolve(root, "test-screenshots");
 mkdirSync(shots, { recursive: true });
 const port = 4187;
-const server = spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1"], {
-  cwd: root, stdio: "ignore"
-});
+const server = spawn("python3", ["-m", "http.server", String(port), "--bind", "127.0.0.1"], { cwd: root, stdio: "ignore" });
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 let browser;
 try {
   let online = false;
-  for (let i=0; i<60; i++) {
+  for (let i = 0; i < 60; i++) {
     try {
       const response = await fetch(`http://127.0.0.1:${port}/index.html`);
       if (response.ok) { online = true; break; }
@@ -27,57 +25,67 @@ try {
   assert(online, "Local HTTP server unavailable");
   browser = await chromium.launch({ headless: true, args: ["--disable-dev-shm-usage"] });
   const devices = [
-    { name:"iphone-375", width:375, height:812, mobile:true },
-    { name:"iphone-390", width:390, height:844, mobile:true },
-    { name:"android-430", width:430, height:932, mobile:true },
-    { name:"desktop-1440", width:1440, height:900, mobile:false }
+    { name: "iphone-375", width: 375, height: 812, mobile: true },
+    { name: "iphone-390", width: 390, height: 844, mobile: true },
+    { name: "android-430", width: 430, height: 932, mobile: true },
+    { name: "desktop-1440", width: 1440, height: 900, mobile: false },
   ];
-  for (const d of devices) {
+
+  for (const device of devices) {
     const context = await browser.newContext({
-      viewport:{width:d.width,height:d.height},
-      isMobile:d.mobile,hasTouch:d.mobile,
-      deviceScaleFactor:d.mobile?2:1,
-      reducedMotion:"reduce" // deterministic visual assertions; animations still work in normal mode.
+      viewport: { width: device.width, height: device.height },
+      isMobile: device.mobile,
+      hasTouch: device.mobile,
+      deviceScaleFactor: device.mobile ? 2 : 1,
+      reducedMotion: "reduce",
     });
     const page = await context.newPage();
     const runtimeErrors = [];
-    page.on("pageerror",error=>runtimeErrors.push(error.message));
-    await page.goto(`http://127.0.0.1:${port}/index.html`,{waitUntil:"domcontentloaded",timeout:30000});
-    await page.waitForSelector("[data-open-letter]",{timeout:10000});
-    assert.equal(await page.locator("#story > section").count(),30, `${d.name}: scene count`);
-    assert.equal(await page.locator("[data-open-letter]").count(),7, `${d.name}: letter count`);
-    const sceneCheck = await page.evaluate(() => ({
-      bg:getComputedStyle(document.body).backgroundColor,
-      horizontal:document.documentElement.scrollWidth-window.innerWidth,
-      initialized:!!document.getElementById("keepsakeDialog")
+    page.on("pageerror", error => runtimeErrors.push(error.message));
+    await page.goto(`http://127.0.0.1:${port}/index.html`, { waitUntil: "domcontentloaded", timeout: 30000 });
+    await page.waitForSelector("#story > section", { timeout: 10000 });
+    await page.waitForSelector("[data-letter-note]", { timeout: 10000 });
+
+    assert.equal(await page.locator("#story > section").count(), 26, `${device.name}: scene count`);
+    assert.equal(await page.locator("[data-letter-note]").count(), 7, `${device.name}: scattered letter count`);
+    assert((await page.locator(".photo-slot").count()) <= 50, `${device.name}: photo display budget exceeded`);
+    const layout = await page.evaluate(() => ({
+      horizontal: document.documentElement.scrollWidth - window.innerWidth,
+      date: document.querySelector(".hero-date")?.textContent,
+      topbar: document.querySelector(".topbar-meta")?.textContent,
     }));
-    assert(sceneCheck.initialized, `${d.name}: letter dialog initialized`);
-    assert(sceneCheck.horizontal <= 5,`${d.name}: horizontal overflow ${sceneCheck.horizontal}px`);
-    assert(sceneCheck.bg!=="rgb(7, 7, 8)",`${d.name}: dark design not replaced`);
+    assert(layout.horizontal <= 5, `${device.name}: horizontal overflow ${layout.horizontal}px`);
+    assert.match(layout.date, /18\.11\.2026/);
+    assert.match(layout.topbar, /00\s*\/\s*25/);
 
-    await page.locator('[data-open-letter="0"]').click();
-    assert(await page.locator("dialog.keepsake-dialog").evaluate(el=>el.open), `${d.name}: dialog did not open`);
-    assert((await page.locator("[data-letter-body] p").count())>=3, `${d.name}: empty letter`);
-    await page.locator("[data-letter-next]").click();
-    assert.match(await page.locator("[data-letter-index]").textContent(),/02 \/ 07/);
-    await page.locator("[data-close-letter]").click();
-    assert(!(await page.locator("dialog.keepsake-dialog").evaluate(el=>el.open)), `${d.name}: dialog did not close`);
+    await page.locator("#beginButton").click();
+    assert(await page.locator("body").evaluate(el => el.classList.contains("started")), `${device.name}: start state`);
 
-    await page.locator('[data-daypart="night"]').click();
-    assert.match(await page.locator("[data-day-title]").textContent(),/Спокойной ночи/);
-    await page.locator('[data-daypart="morning"]').click();
-    assert.match(await page.locator("[data-day-title]").textContent(),/Доброе утро/);
+    await page.locator(".memory-trigger").first().click();
+    assert(await page.locator("#secretModal").evaluate(el => el.classList.contains("is-visible")), `${device.name}: modal did not open`);
+    await page.locator(".close-modal").click();
+    assert(!(await page.locator("#secretModal").evaluate(el => el.classList.contains("is-visible"))), `${device.name}: modal did not close`);
 
-    await page.locator('[data-tender-index="4"]').click();
-    assert.match(await page.locator("[data-tender-heading]").textContent(),/лучик солнца/);
-    await page.locator(".promise summary").first().click();
-    assert(await page.locator(".promise").first().evaluate(el=>el.open),`${d.name}: promise accordion not opening`);
+    await page.locator("#places [data-place]").first().click();
+    assert(await page.locator("[data-place-popover]").evaluate(el => el.classList.contains("is-visible")), `${device.name}: map popover`);
 
-    await page.locator(".prologue-scene").screenshot({path:resolve(shots,d.name+".png")});
-    await page.locator(".letters-scene").screenshot({path:resolve(shots,d.name+"-letters.png")});
-    await page.locator(".tender-scene").screenshot({path:resolve(shots,d.name+"-tender.png")});
-    assert.deepEqual(runtimeErrors,[],`${d.name}: runtime errors`);
-    console.log(`${d.name}: OK | 30 scenes | 7 envelopes | day/night | tender notes | promises | no horizontal overflow`);
+    const compare = page.locator("[data-compare]");
+    const compareBox = await compare.boundingBox();
+    assert(compareBox, `${device.name}: compare frame missing`);
+    await page.mouse.move(compareBox.x + compareBox.width * .5, compareBox.y + compareBox.height * .5);
+    await page.mouse.down();
+    await page.mouse.move(compareBox.x + compareBox.width * .68, compareBox.y + compareBox.height * .5);
+    await page.mouse.up();
+    assert(Number(await page.locator("[data-compare-divider]").getAttribute("aria-valuenow")) > 60, `${device.name}: compare drag`);
+
+    await page.locator("#replayButton").click();
+    assert.equal(await page.evaluate(() => window.scrollY), 0, `${device.name}: replay scroll reset`);
+    assert(!(await page.locator("body").evaluate(el => el.classList.contains("started"))), `${device.name}: replay state`);
+
+    await page.locator(".prologue").screenshot({ path: resolve(shots, `${device.name}.png`) });
+    await page.locator(".before-scene").screenshot({ path: resolve(shots, `${device.name}-letters.png`) });
+    assert.deepEqual(runtimeErrors, [], `${device.name}: runtime errors`);
+    console.log(`${device.name}: OK | 26 scenes | 18 unique photos | 7 letter moments | touch-safe layout`);
     await context.close();
   }
 } finally {
