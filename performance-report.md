@@ -26,6 +26,7 @@ Audited the published baseline and the source on 13 October 2026.
 - No per-frame DOM layout reads in pointer handlers.
 - No smooth-scroll library.
 - Videos and image assets have a lazy-loading path through `AssetManager`.
+- The visual archive is budgeted for 15–20 unique photos and approximately 35–45 intentional display instances, so the same memory can return as a tunnel frame, Polaroid, portrait, comparison frame or finale image without loading a huge archive.
 
 ## Verification performed
 
