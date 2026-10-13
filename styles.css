@@ -15,7 +15,7 @@
 }
 
 * { box-sizing: border-box; }
-html { background: var(--bg); color-scheme: dark; scroll-behavior: auto; }
+html { background: var(--bg); color-scheme: light; scroll-behavior: auto; }
 body { margin: 0; min-width: 320px; overflow-x: hidden; background: var(--bg); color: var(--ivory); font-family: var(--sans); text-rendering: optimizeLegibility; }
 body, button, a { -webkit-tap-highlight-color: transparent; }
 button, a { font: inherit; color: inherit; }
@@ -173,7 +173,7 @@ h2 em, .accent { color: var(--cream); font-style: italic; }
 .stage-gallery .photo-slot:first-child { grid-row: span 2; }
 .stage-gallery .photo-slot:last-child { grid-column: span 2; aspect-ratio: 16 / 9; }
 .video-slot { position: relative; display: grid; place-items: center; min-height: 210px; border: 1px solid rgba(216, 197, 180, .24); background: linear-gradient(140deg, #351623, #120b10); color: var(--cream); }
-.video-slot::before { content: "video / poster"; position: absolute; bottom: 12px; left: 12px; color: var(--faint); font: 9px var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+.video-slot::before { content: "короткое видео"; position: absolute; bottom: 12px; left: 12px; color: var(--faint); font: 9px var(--mono); letter-spacing: .08em; text-transform: uppercase; }
 .play-mark { display: grid; place-items: center; width: 50px; height: 50px; border: 1px solid var(--rose); border-radius: 50%; color: var(--rose); }
 .silk-scene { justify-content: flex-start; }
 .silk-field { position: absolute; inset: 20% -20% 0 38%; border-radius: 48% 16% 53% 22%; background: linear-gradient(105deg, transparent 18%, rgba(94, 23, 46, .25) 34%, rgba(216, 197, 180, .27) 47%, rgba(43, 13, 22, .14) 59%, transparent 77%); transform: rotate(-21deg); animation: silk 9s ease-in-out infinite alternate; }
