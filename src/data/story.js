@@ -3,6 +3,8 @@ export const RELATIONSHIP = {
   anniversaryDate: "18.11.2026",
   days: 730,
   title: "MILANA — TWO YEARS",
+  musicSrc: null, // Example: "./assets/audio/relationship.mp3" after adding the file
+  voiceSrc: null, // Example: "./assets/audio/voice-note.mp3"
 };
 
 export const PHOTO_PIPELINE = {
