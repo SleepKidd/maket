@@ -51,7 +51,7 @@ export const SCENES = [
   { id: "desk", index: "07", kind: "desk", kicker: "Архив вещей", title: "У каждой", accent: "свой вес.", copy: "Маленькие вещи иногда хранят целые истории.", stage: 0.38 },
   { id: "everyday", index: "08", kind: "gallery", kicker: "Галерея случайных моментов", title: "Самые", accent: "обычные дни.", copy: "Не только красивые кадры. Самое ценное часто скрыто в обычном дне.", slots: Array.from({ length: 10 }, (_, i) => slot(`случайный момент ${i + 1}`, "everyday", i % 3 === 0 ? "16 / 10" : "4 / 5")), stage: 0.43 },
   { id: "timeline", index: "09", kind: "timeline", kicker: "Цветочная временная линия", title: "Каждая дата", accent: "оставляет лист.", copy: "Месяц за месяцем наша история становилась длиннее. И прекраснее.", stage: 0.48 },
-  { id: "half-year", index: "10", kind: "number", number: "182", kicker: "Полгода", title: "Бутон", accent: "раскрылся.", copy: "Полгода рядом. И ещё столько всего впереди.", slots: [slot("главная фотография полугода", "half-year", "4 / 5"), ...Array.from({ length: 4 }, (_, i) => slot(`фото полугода ${i + 1}`, "half-year"))], stage: 0.56 },
+  { id: "half-year", index: "10", kind: "number", number: "181", kicker: "Полгода", title: "Полгода", accent: "рядом.", copy: "Полгода рядом. И ещё столько всего впереди.", slots: [slot("главная фотография полугода", "half-year", "4 / 5"), ...Array.from({ length: 4 }, (_, i) => slot(`фото полугода ${i + 1}`, "half-year"))], stage: 0.56 },
   { id: "places", index: "11", kind: "places", kicker: "Наши места", title: "Где мы", accent: "становились нами.", copy: "У важных мест всегда есть своя история. Особенно когда в ней есть ты.", stage: 0.61 },
   { id: "messages", index: "12", kind: "messages", kicker: "Наши сообщения", title: "То, что", accent: "остаётся между строк.", copy: "Некоторые слова хочется хранить отдельно от остальных.", stage: 0.65 },
   { id: "year", index: "13", kind: "number", number: "365", kicker: "Первый год", title: "Первый", accent: "настоящий пик.", copy: "Целый год. Целый мир воспоминаний, который не уместить в одну фотографию.", slots: Array.from({ length: 6 }, (_, i) => slot(`фото первого года ${i + 1}`, "first-year")), stage: 0.7 },
@@ -68,6 +68,43 @@ export const SCENES = [
   { id: "finale", index: "24", kind: "finale", kicker: "Финал", title: "Я люблю тебя.", accent: "И это только первые два года.", copy: "С нашими двумя годами, Милана.", stage: 1 },
   { id: "secret", index: "25", kind: "secret", kicker: "ONE MORE THING", title: "Непоказанное", accent: "останется здесь.", copy: "Есть воспоминания, которые мы храним особенно бережно.", stage: 1 },
 ];
+
+
+/* Extra editorial chapters: separate content, never invent personal memories. */
+const insertAfter = (target, scene) => {
+  const at = SCENES.findIndex(item => item.id === target);
+  if (at < 0) throw new Error("Missing chapter: " + target);
+  SCENES.splice(at + 1, 0, scene);
+};
+insertAfter("month", {
+  id:"letters", kind:"letters", kicker:"Семь писем",
+  title:"Для тебя,",
+  accent:"моя девочка.",
+  copy:"Семь конвертов. Семь разных моментов. И одно неизменное чувство. Коснись любого письма — я оставил в нём слова для тебя.",
+  stage:.29
+});
+insertAfter("year", {
+  id:"day-night", kind:"daynight", kicker:"От рассвета до звёзд",
+  title:"И утром,",
+  accent:"и перед сном.",
+  copy:"Для тебя найдётся нежное слово в любое время суток.",
+  stage:.71
+});
+insertAfter("love", {
+  id:"tenderness", kind:"tender", kicker:"Мои ласковые слова",
+  title:"Как бы я",
+  accent:"тебя ни называл…",
+  copy:"Каждое имя — маленькое признание. Выбери любое и открой послание, которое я хотел оставить тебе.",
+  stage:.895
+});
+insertAfter("voice", {
+  id:"promises", kind:"vows", kicker:"То, что важнее красивых слов",
+  title:"Я хочу",
+  accent:"беречь нас.",
+  copy:"Не обещания безупречной сказки. Небольшие вещи, которые я действительно хочу делать для тебя и для нас.",
+  stage:.975
+});
+SCENES.forEach((scene, index) => { scene.index = String(index).padStart(2, "0"); });
 
 export const MESSAGE_SLOTS = [
   "реальный фрагмент переписки 01",
