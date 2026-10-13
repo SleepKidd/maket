@@ -32,7 +32,9 @@ Audited the published baseline and the source on 13 October 2026.
 - `node --check` passed for all JavaScript modules.
 - Static HTTP server returned `200` for the page, app module and stylesheet.
 - Data import check passed: 26 story scenes and 8 secret-memory records.
-- Published Pages was opened at desktop viewport and the baseline console showed the old WebGL context failure in the cloud browser; the new fallback path explicitly handles that case.
+- Published Pages was verified after the successful deployment of commit `0b421e7`: 26 scenes render, the corrected anniversary dates are present, the first-day label is resolved, and the fresh runtime emits no app errors in the available browser.
+- Smoke-tested the live page: start unlock, secret-memory modal, place popover, pointer drag on Then / Now, and replay. Replay returned `scrollY = 0`, reset the start state, and cleared the secret counter.
+- The available browser has WebGL disabled, so the live check exercised the intentional CSS botanical fallback. On a WebGL-capable phone/desktop the same page initializes the instanced Three.js world.
 
 ## Remaining environment limitation
 
