@@ -27,6 +27,7 @@ Audited the published baseline and the source on 13 October 2026.
 - No smooth-scroll library.
 - Videos and image assets have a lazy-loading path through `AssetManager`.
 - The visual archive is budgeted for exactly 15 unique photos and approximately 35–45 intentional display instances, so the same memory can return as a tunnel frame, Polaroid, portrait, comparison frame or finale image without loading a huge archive. Files are mapped in `assets/photos/README.md` and lazy-hydrated only near their scene.
+- Botanical geometry uses shared curved petal/leaf buffers, instanced flower layers, instanced stems and a single beveled heart mesh. The heart rotation is driven by one passive scroll listener scheduled through RAF; it does not create a second render loop.
 
 ## Verification performed
 

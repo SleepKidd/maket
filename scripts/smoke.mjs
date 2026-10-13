@@ -33,6 +33,8 @@ assert(app.includes("new Scheduler"), "Single scheduler missing");
 assert(app.includes("letterNote"), "Letter composition missing");
 assert(app.includes("createBotanicalWorld"), "WebGL world missing");
 assert(webgl.includes("InstancedMesh"), "Instanced botanical geometry missing");
+assert(webgl.includes("createHeartGeometry"), "3D heart geometry missing");
+assert(webgl.includes("setScrollProgress"), "Scroll-driven heart rotation missing");
 assert(!webgl.includes("SphereGeometry(.23"), "Old primitive flower geometry remains");
 
 const start = RELATIONSHIP.startDate.split(".").reverse().join("-");

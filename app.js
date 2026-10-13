@@ -254,6 +254,20 @@ function setupResize(world) {
   window.addEventListener("orientationchange", () => { clearTimeout(timer); timer = setTimeout(() => { lastWidth = window.innerWidth; world?.resize(); }, 180); }, { passive: true });
 }
 
+function setupScrollProgress(world) {
+  let raf = 0;
+  const update = () => {
+    raf = 0;
+    const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+    world?.setScrollProgress(Math.max(0, Math.min(1, window.scrollY / maxScroll)));
+  };
+  const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll, { passive: true });
+  update();
+  return () => { window.removeEventListener("scroll", onScroll); window.removeEventListener("resize", onScroll); cancelAnimationFrame(raf); };
+}
+
 function setupDebug({ quality, world }) {
   if (!new URLSearchParams(location.search).has("debug")) return () => {};
   const overlay = $("#devOverlay"); overlay.hidden = false;
@@ -274,10 +288,11 @@ function boot() {
   new AssetManager();
   const { showToast } = setupInteractions({ audio, input });
   setupResize(world);
+  const destroyScrollProgress = setupScrollProgress(world);
   const updateDebug = setupDebug({ quality, world });
   const scheduler = new Scheduler({ quality, onFrame: (now, delta) => { input.update(); world?.update(now, delta); updateDebug(now); } });
   scheduler.start();
-  window.addEventListener("pagehide", () => { scheduler.stop(); sceneManager.destroy(); input.destroy(); audio.destroy(); world?.dispose(); }, { once: true, passive: true });
+  window.addEventListener("pagehide", () => { scheduler.stop(); sceneManager.destroy(); input.destroy(); audio.destroy(); world?.dispose(); destroyScrollProgress(); }, { once: true, passive: true });
   if (!world) showToast("3D отключён браузером — включена лёгкая botanical fallback-сцена");
   window.__MILANA_DEBUG__ = { quality, world, scheduler, sceneManager };
 }
