@@ -163,7 +163,8 @@ function setupInteractions({ audio, input }) {
     secretText.textContent = text;
     modal.classList.add("is-visible");
     modal.setAttribute("aria-hidden", "false");
-    $("[data-secret-count]").textContent = `${Math.min(foundSecrets.size, SECRETS.length)} / ${SECRETS.length} найдено`;
+    const secretCount = $("[data-secret-count]");
+    if (secretCount) secretCount.textContent = `${Math.min(foundSecrets.size, SECRETS.length)} / ${SECRETS.length} найдено`;
     if (navigator.vibrate) navigator.vibrate(8);
   };
   const closeSecret = () => { modal.classList.remove("is-visible"); modal.setAttribute("aria-hidden", "true"); };
@@ -230,7 +231,7 @@ function setupInteractions({ audio, input }) {
   }
 
   $("#voiceButton")?.addEventListener("click", async () => { const played = await audio.playVoice(); $("[data-voice-wave]").classList.toggle("is-playing", played); if (!played) showToast("Голос пока молчит"); });
-  $("#replayButton")?.addEventListener("click", () => { window.scrollTo(0, 0); document.body.classList.remove("started"); $("#beginButton").disabled = false; $("#beginButton").textContent = "Коснись, чтобы начать"; foundSecrets.clear(); $("[data-secret-count]").textContent = `0 / ${SECRETS.length} найдено`; });
+  $("#replayButton")?.addEventListener("click", () => { window.scrollTo(0, 0); document.body.classList.remove("started"); $("#beginButton").disabled = false; $("#beginButton").textContent = "Коснись, чтобы начать"; foundSecrets.clear(); const secretCount = $("[data-secret-count]"); if (secretCount) secretCount.textContent = `0 / ${SECRETS.length} найдено`; });
 
   const cardRects = new WeakMap();
   $$('[data-photo-slot]').forEach((card) => {
