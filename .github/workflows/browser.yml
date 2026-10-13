@@ -1,0 +1,27 @@
+name: Mobile experience checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser automation
+        run: |
+          npm install --no-save --no-fund --no-audit playwright@1.56.1
+          npx playwright install chromium --with-deps
+      - name: Functional mobile and desktop checks
+        run: node scripts/e2e.mjs
+      - name: Upload visual captures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: milana-visual-review
+          path: test-screenshots/
+          if-no-files-found: ignore
