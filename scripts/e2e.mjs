@@ -70,6 +70,7 @@ try {
     assert(await page.locator("[data-place-popover]").evaluate(el => el.classList.contains("is-visible")), `${device.name}: map popover`);
 
     const compare = page.locator("[data-compare]");
+    await compare.scrollIntoViewIfNeeded();
     const compareBox = await compare.boundingBox();
     assert(compareBox, `${device.name}: compare frame missing`);
     await page.mouse.move(compareBox.x + compareBox.width * .5, compareBox.y + compareBox.height * .5);
