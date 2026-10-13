@@ -3,31 +3,54 @@ export const RELATIONSHIP = {
   anniversaryDate: "18.11.2026",
   days: 730,
   title: "MILANA — TWO YEARS",
-  musicSrc: null, // Example: "./assets/audio/relationship.mp3" after adding the file
-  voiceSrc: null, // Example: "./assets/audio/voice-note.mp3"
 };
 
 export const PHOTO_PIPELINE = {
-  sourceTarget: "200–250",
-  finalTarget: "110–150",
+  sourceTarget: "15–20",
+  finalTarget: "15–20",
+  uniquePhotos: 18,
+  displayInstances: "35–45",
   categories: {
-    "before-us": 8,
-    beginning: 20,
-    "one-month": 15,
-    "three-months": 15,
-    "half-year": 20,
-    everyday: 40,
-    places: 20,
-    "first-year": 24,
-    "second-year": 40,
-    milana: 20,
-    us: 40,
-    "then-now": 4,
-    finale: 10,
+    "before-us": 2,
+    beginning: 4,
+    "one-month": 2,
+    "three-months": 2,
+    "half-year": 1,
+    everyday: 4,
+    places: 1,
+    "first-year": 1,
+    "second-year": 2,
+    milana: 1,
+    us: 1,
+    "then-now": 2,
+    finale: 1,
   },
 };
 
-const slot = (label, category, ratio = "4 / 5") => ({ label, category, ratio });
+const photo = (id, label, category, ratio = "4 / 5") => ({ id, label, category, ratio });
+
+const P = {
+  beforeA: photo("before-01", "твоя фотография", "before-us"),
+  beforeB: photo("before-02", "портрет Миланы", "before-us"),
+  start: photo("beginning-01", "самый важный кадр начала", "beginning", "4 / 5"),
+  beginningA: photo("beginning-02", "кадр начала 01", "beginning", "3 / 4"),
+  beginningB: photo("beginning-03", "кадр начала 02", "beginning", "4 / 5"),
+  beginningC: photo("beginning-04", "кадр начала 03", "beginning", "3 / 4"),
+  monthA: photo("month-01", "фото первого месяца 01", "one-month"),
+  monthB: photo("month-02", "фото первого месяца 02", "one-month", "3 / 4"),
+  everydayA: photo("everyday-01", "случайный момент 01", "everyday", "16 / 10"),
+  everydayB: photo("everyday-02", "случайный момент 02", "everyday"),
+  everydayC: photo("everyday-03", "случайный момент 03", "everyday", "3 / 4"),
+  everydayD: photo("everyday-04", "случайный момент 04", "everyday", "16 / 10"),
+  place: photo("places-01", "фотография нашего места", "places", "16 / 10"),
+  halfYear: photo("half-year-01", "главная фотография полугода", "half-year", "4 / 5"),
+  year: photo("first-year-01", "главный кадр первого года", "first-year", "4 / 5"),
+  milana: photo("milana-01", "портрет Миланы", "milana", "3 / 4"),
+  us: photo("us-01", "один из ваших главных кадров", "us", "4 / 5"),
+  final: photo("finale-01", "свежая совместная фотография", "finale", "4 / 5"),
+};
+
+export const PHOTO_LIBRARY = Object.values(P);
 
 export const SECRETS = [
   { id: "date-mark", label: "маленькая дата", text: "Здесь будет дата, которую вы узнаете сразу. Одно короткое воспоминание — без лишних слов." },
@@ -40,71 +63,44 @@ export const SECRETS = [
   { id: "object", label: "предмет", text: "Маленькая вещь из вашей жизни. Такие детали иногда помнят больше, чем большие даты." },
 ];
 
-export const SCENES = [
-  { id: "prologue", index: "00", kind: "prologue", kicker: "Для Миланы", title: "MILANA", subtitle: "TWO YEARS", copy: "Два года. Тысячи мгновений. Одна история — наша.", stage: 0.05 },
-  { id: "before-us", index: "01", kind: "before", chapter: "ГЛАВА I", kicker: "До нас", title: "Два человека.", accent: "Одна будущая история.", copy: "Когда-то были просто ты и я. А потом появилась история, которую хочется беречь.", slots: [slot("твоя фотография", "before-us"), slot("фотография Миланы", "before-us")] , stage: 0.1 },
-  { id: "first-day", index: "02", kind: "date", chapter: "Тот самый день", title: "18.11.24", copy: "18 ноября — дата, с которой началась наша история." , stage: 0.12 },
-  { id: "beginning", index: "03", kind: "tunnel", chapter: "ГЛАВА II", kicker: "Первые недели", title: "Всё было", accent: "впервые.", copy: "Как много всего было впервые. И как быстро обычные моменты стали дорогими.", slots: Array.from({ length: 8 }, (_, i) => slot(`кадр начала ${String(i + 1).padStart(2, "0")}`, "beginning")), stage: 0.17 },
-  { id: "film", index: "04", kind: "film", kicker: "Первые месяцы", title: "Мы учились", accent: "быть рядом.", copy: "Каждая фотография может вернуть нас в мгновение, которое уже не повторится — и останется с нами.", slots: Array.from({ length: 8 }, (_, i) => slot(`кадр плёнки ${i + 1}`, "beginning", "3 / 4")), stage: 0.21 },
-  { id: "month", index: "05", kind: "month", kicker: "Первый месяц", title: "30", accent: "дней вместе", copy: "Первый маленький праздник нашей большой истории.", slots: Array.from({ length: 4 }, (_, i) => slot(`фото первого месяца ${i + 1}`, "one-month")), stage: 0.27 },
-  { id: "three-months", index: "06", kind: "glass", kicker: "Три месяца", title: "3 MONTHS", accent: "стало привычно быть рядом.", copy: "Время шло, а воспоминаний становилось всё больше. И всё больше было нас.", slots: Array.from({ length: 4 }, (_, i) => slot(`фото трёх месяцев ${i + 1}`, "three-months")), stage: 0.34 },
-  { id: "desk", index: "07", kind: "desk", kicker: "Архив вещей", title: "У каждой", accent: "свой вес.", copy: "Маленькие вещи иногда хранят целые истории.", stage: 0.38 },
-  { id: "everyday", index: "08", kind: "gallery", kicker: "Галерея случайных моментов", title: "Самые", accent: "обычные дни.", copy: "Не только красивые кадры. Самое ценное часто скрыто в обычном дне.", slots: Array.from({ length: 10 }, (_, i) => slot(`случайный момент ${i + 1}`, "everyday", i % 3 === 0 ? "16 / 10" : "4 / 5")), stage: 0.43 },
-  { id: "timeline", index: "09", kind: "timeline", kicker: "Цветочная временная линия", title: "Каждая дата", accent: "оставляет лист.", copy: "Месяц за месяцем наша история становилась длиннее. И прекраснее.", stage: 0.48 },
-  { id: "half-year", index: "10", kind: "number", number: "181", kicker: "Полгода", title: "Полгода", accent: "рядом.", copy: "Полгода рядом. И ещё столько всего впереди.", slots: [slot("главная фотография полугода", "half-year", "4 / 5"), ...Array.from({ length: 4 }, (_, i) => slot(`фото полугода ${i + 1}`, "half-year"))], stage: 0.56 },
-  { id: "places", index: "11", kind: "places", kicker: "Наши места", title: "Где мы", accent: "становились нами.", copy: "У важных мест всегда есть своя история. Особенно когда в ней есть ты.", stage: 0.61 },
-  { id: "messages", index: "12", kind: "messages", kicker: "Наши сообщения", title: "То, что", accent: "остаётся между строк.", copy: "Некоторые слова хочется хранить отдельно от остальных.", stage: 0.65 },
-  { id: "year", index: "13", kind: "number", number: "365", kicker: "Первый год", title: "Первый", accent: "настоящий пик.", copy: "Целый год. Целый мир воспоминаний, который не уместить в одну фотографию.", slots: Array.from({ length: 6 }, (_, i) => slot(`фото первого года ${i + 1}`, "first-year")), stage: 0.7 },
-  { id: "first-year", index: "14", kind: "gallery-stage", kicker: "Первый год в фотографиях", title: "Один год", accent: "не уместить в кадр.", copy: "Можно пересматривать фотографии тысячу раз — и каждый раз улыбаться.", slots: Array.from({ length: 6 }, (_, i) => slot(`сцена первого года ${i + 1}`, "first-year")), stage: 0.75 },
-  { id: "second-year", index: "15", kind: "glass", kicker: "Второй год", title: "YEAR", accent: "TWO.", copy: "Время шло, а наша история не переставала меняться и расти.", slots: Array.from({ length: 5 }, (_, i) => slot(`фото второго года ${i + 1}`, "second-year")), stage: 0.79 },
-  { id: "events", index: "16", kind: "events", kicker: "Самые важные дни", title: "Несколько дней", accent: "которые остались.", copy: "Есть дни, к которым хочется мысленно возвращаться снова и снова.", slots: Array.from({ length: 4 }, (_, i) => slot(`важное событие ${i + 1}`, "second-year")), stage: 0.82 },
-  { id: "you", index: "17", kind: "silk", kicker: "Глава «Ты»", title: "В тебе", accent: "целая вселенная.", copy: "Сколько бы ни было фотографий, мне никогда не надоест смотреть на тебя.", slots: Array.from({ length: 6 }, (_, i) => slot(`портрет Миланы ${i + 1}`, "milana")), stage: 0.86 },
-  { id: "love", index: "18", kind: "love", kicker: "Я люблю…", title: "Твой смех.", accent: "Твой взгляд.", copy: "Есть много разных причин. А главная — просто ты.", statements: ["ТВОЙ СМЕХ", "ТВОЙ ВЗГЛЯД", "ТО, КАК ТЫ…", "ТВОЯ НЕПОХОЖЕСТЬ", "ТО, ЧТО ТЫ ОСТАЁШЬСЯ СОБОЙ"], stage: 0.88 },
-  { id: "universe", index: "19", kind: "universe", kicker: "Наш мир", title: "Десятки кадров", accent: "в одном пространстве.", copy: "Наш мир состоит из мгновений, которые хочется сохранить навсегда.", slots: Array.from({ length: 10 }, (_, i) => slot(`кадр нашего мира ${i + 1}`, "us")), stage: 0.91 },
-  { id: "then-now", index: "20", kind: "compare", kicker: "Then / Now", title: "730 дней", accent: "между двумя кадрами.", copy: "Мы тогда. Мы сейчас. И всё, что между этими двумя кадрами.", stage: 0.94 },
-  { id: "voice", index: "21", kind: "voice", kicker: "Перед финалом", title: "Теперь просто", accent: "послушай меня.", copy: "Иногда самое важное не прочитать, а услышать.", stage: 0.96 },
-  { id: "days", index: "22", kind: "number", number: "730", kicker: "Два года", title: "дней", accent: "с тобой.", copy: "Два года с тобой. И столько прекрасного ещё впереди.", slots: [slot("свежая совместная фотография", "finale", "4 / 5")], stage: 1 },
-  { id: "letter", index: "23", kind: "letter", kicker: "Письмо", title: "Милана,", copy: "Есть слова, которые я хочу сказать только тебе.", stage: 1 },
-  { id: "finale", index: "24", kind: "finale", kicker: "Финал", title: "Я люблю тебя.", accent: "И это только первые два года.", copy: "С нашими двумя годами, Милана.", stage: 1 },
-  { id: "secret", index: "25", kind: "secret", kicker: "ONE MORE THING", title: "Непоказанное", accent: "останется здесь.", copy: "Есть воспоминания, которые мы храним особенно бережно.", stage: 1 },
+export const LETTER_MOMENTS = [
+  { id: "before-us", number: "01", title: "До того, как появилось «мы»", text: "Короткий фрагмент письма о двух отдельных жизнях — добавится из твоих настоящих слов." },
+  { id: "first-day", number: "02", title: "В тот самый день", text: "Здесь будет одна честная мысль, которую хочется оставить рядом с датой." },
+  { id: "month", number: "03", title: "Первые тридцать дней", text: "Не длинное признание — маленькая деталь, которую помнишь до сих пор." },
+  { id: "everyday", number: "04", title: "Самые обычные дни", text: "Письмо без пафоса: про смешное, сонное, случайное и настоящее." },
+  { id: "half-year", number: "05", title: "Когда стало привычно быть рядом", text: "Здесь появится фрагмент о моменте, когда отношения начали ощущаться домом." },
+  { id: "you", number: "06", title: "Про тебя", text: "Несколько строк, которые не должны звучать как шаблон. Только твои формулировки." },
+  { id: "voice", number: "07", title: "Перед тем, как сказать вслух", text: "Последняя короткая записка перед голосовым — без декора ради декора." },
 ];
 
-
-/* Extra editorial chapters: separate content, never invent personal memories. */
-const insertAfter = (target, scene) => {
-  const at = SCENES.findIndex(item => item.id === target);
-  if (at < 0) throw new Error("Missing chapter: " + target);
-  SCENES.splice(at + 1, 0, scene);
-};
-insertAfter("month", {
-  id:"letters", kind:"letters", kicker:"Семь писем",
-  title:"Для тебя,",
-  accent:"моя девочка.",
-  copy:"Семь конвертов. Семь разных моментов. И одно неизменное чувство. Коснись любого письма — я оставил в нём слова для тебя.",
-  stage:.29
-});
-insertAfter("year", {
-  id:"day-night", kind:"daynight", kicker:"От рассвета до звёзд",
-  title:"И утром,",
-  accent:"и перед сном.",
-  copy:"Для тебя найдётся нежное слово в любое время суток.",
-  stage:.71
-});
-insertAfter("love", {
-  id:"tenderness", kind:"tender", kicker:"Мои ласковые слова",
-  title:"Как бы я",
-  accent:"тебя ни называл…",
-  copy:"Каждое имя — маленькое признание. Выбери любое и открой послание, которое я хотел оставить тебе.",
-  stage:.895
-});
-insertAfter("voice", {
-  id:"promises", kind:"vows", kicker:"То, что важнее красивых слов",
-  title:"Я хочу",
-  accent:"беречь нас.",
-  copy:"Не обещания безупречной сказки. Небольшие вещи, которые я действительно хочу делать для тебя и для нас.",
-  stage:.975
-});
-SCENES.forEach((scene, index) => { scene.index = String(index).padStart(2, "0"); });
+export const SCENES = [
+  { id: "prologue", index: "00", kind: "prologue", kicker: "Для Миланы", title: "MILANA", subtitle: "TWO YEARS", copy: "История, которую можно пройти заново.", stage: 0.05 },
+  { id: "before-us", index: "01", kind: "before", chapter: "ГЛАВА I", kicker: "До нас", title: "Два человека.", accent: "Одна будущая история.", copy: "Две разные жизни, которые ещё не знали, что однажды начнут звучать вместе.", slots: [P.beforeA, P.beforeB], stage: 0.1 },
+  { id: "first-day", index: "02", kind: "date", chapter: "Тот самый день", title: "18.11.24", copy: "День, с которого «я» и «ты» начали понемногу превращаться в «мы»." , stage: 0.12 },
+  { id: "beginning", index: "03", kind: "tunnel", chapter: "ГЛАВА II", kicker: "Первые недели", title: "Всё было", accent: "впервые.", copy: "Первые прогулки. Первые привычки. Первые фотографии, которые хотелось сохранять даже без причины.", slots: [P.start, P.beginningA, P.beginningB, P.beginningC], stage: 0.17 },
+  { id: "film", index: "04", kind: "film", kicker: "Первые месяцы", title: "Мы учились", accent: "быть рядом.", copy: "Кадр за кадром. Те же четыре фотографии получают другой ритм — как память, которая возвращается фрагментами.", slots: [P.beginningA, P.beginningB, P.beginningC, P.start], stage: 0.21 },
+  { id: "month", index: "05", kind: "month", kicker: "Первый месяц", title: "30", accent: "дней вместе", copy: "Первая дата, которую хотелось отметить.", slots: [P.monthA, P.monthB, P.beginningA], stage: 0.27 },
+  { id: "three-months", index: "06", kind: "glass", kicker: "Три месяца", title: "3 MONTHS", accent: "стало привычно быть рядом.", copy: "Большая фотография, стекло и спокойный свет. Личные факты добавим после архива.", slots: [P.monthA, P.beginningB, P.beginningC], stage: 0.34 },
+  { id: "desk", index: "07", kind: "desk", kicker: "Архив вещей", title: "У каждой", accent: "свой вес.", copy: "Фотографии, записки, билет, конверт и маленькие предметы, которые хранят больше, чем кажется.", stage: 0.38 },
+  { id: "everyday", index: "08", kind: "gallery", kicker: "Галерея случайных моментов", title: "Самые", accent: "обычные дни.", copy: "Сонные, кривые, смешные. Из них и складывается настоящая жизнь.", slots: [P.everydayA, P.everydayB, P.everydayC, P.everydayD], stage: 0.43 },
+  { id: "timeline", index: "09", kind: "timeline", kicker: "Цветочная временная линия", title: "Каждая дата", accent: "оставляет лист.", copy: "Ветка растёт вместе с историей.", stage: 0.48 },
+  { id: "half-year", index: "10", kind: "number", number: "182", kicker: "Полгода", title: "Бутон", accent: "раскрылся.", copy: "Первый большой bloom. Здесь будет главное фото этого периода.", slots: [P.halfYear, P.monthB], stage: 0.56 },
+  { id: "places", index: "11", kind: "places", kicker: "Наши места", title: "Где мы", accent: "становились нами.", copy: "Стилизованная карта вместо чужого Google Maps iframe.", stage: 0.61 },
+  { id: "messages", index: "12", kind: "messages", kicker: "Наши сообщения", title: "То, что", accent: "остаётся между строк.", copy: "Сюда попадут только реальные фрагменты вашей переписки.", stage: 0.65 },
+  { id: "year", index: "13", kind: "number", number: "365", kicker: "Первый год", title: "Первый", accent: "настоящий пик.", copy: "Большая сцена года, фотографии между цифрами и больше раскрытых цветов.", slots: [P.year, P.us], stage: 0.7 },
+  { id: "first-year", index: "14", kind: "gallery-stage", kicker: "Первый год в фотографиях", title: "Один год", accent: "не помещается в сетку.", copy: "Крупный кадр, коллаж, видео и тишина между ними.", slots: [P.year, P.everydayA, P.us, P.final], stage: 0.75 },
+  { id: "second-year", index: "15", kind: "glass", kicker: "Второй год", title: "YEAR", accent: "TWO.", copy: "Меньше scrapbook. Больше пространства, чистых фотографий, ткани и света.", slots: [P.us, P.final, P.halfYear], stage: 0.79 },
+  { id: "events", index: "16", kind: "events", kicker: "Самые важные дни", title: "Несколько дней", accent: "которые остались.", copy: "Несколько событий получат собственные даты и настоящие рассказы.", slots: [P.place, P.everydayB, P.final], stage: 0.82 },
+  { id: "you", index: "17", kind: "silk", kicker: "Глава «Ты»", title: "В тебе", accent: "целая вселенная.", copy: "Один сильный портрет получает несколько разных световых композиций — цветы, ткань, стекло, отражение.", slots: [P.milana, P.milana, P.milana], stage: 0.86 },
+  { id: "love", index: "18", kind: "love", kicker: "Я люблю…", title: "Твой смех.", accent: "Твой взгляд.", copy: "10–15 настоящих мыслей, собранных из твоих слов.", statements: ["ТВОЙ СМЕХ", "ТВОЙ ВЗГЛЯД", "ТО, КАК ТЫ…", "ТВОЯ НЕПОХОЖЕСТЬ", "ТО, ЧТО ТЫ ОСТАЁШЬСЯ СОБОЙ"], stage: 0.88 },
+  { id: "universe", index: "19", kind: "universe", kicker: "Наш мир", title: "Десятки кадров", accent: "в одном пространстве.", copy: "Большая галерея отношений: четыре настоящих кадра повторяются на разных глубинах, как память, а не как каталог.", slots: [P.us, P.beforeA, P.beginningB, P.final], stage: 0.91 },
+  { id: "then-now", index: "20", kind: "compare", kicker: "Then / Now", title: "730 дней", accent: "между двумя кадрами.", copy: "Самая ранняя совместная фотография и одна из последних.", stage: 0.94 },
+  { id: "voice", index: "21", kind: "voice", kicker: "Перед финалом", title: "Теперь просто", accent: "послушай меня.", copy: "Здесь появится настоящее голосовое сообщение. Визуальный шум уходит.", stage: 0.96 },
+  { id: "days", index: "22", kind: "number", number: "730", kicker: "Два года", title: "дней", accent: "с тобой.", copy: "Полное цветение. Свет теплеет. Один свежий кадр становится центром всей композиции.", slots: [P.final], stage: 1 },
+  { id: "letter", index: "23", kind: "letter", kicker: "Письмо", title: "Милана,", copy: "Здесь будет настоящее письмо на 700–1500 слов — только из ваших фактов, голосов и деталей.", stage: 1 },
+  { id: "finale", index: "24", kind: "finale", kicker: "Финал", title: "Я люблю тебя.", accent: "И это только первые два года.", copy: "Композиция из начала возвращается полностью раскрытой.", stage: 1 },
+  { id: "secret", index: "25", kind: "secret", kicker: "ONE MORE THING", title: "Непоказанное", accent: "останется здесь.", copy: "Секретный эпилог откроется, когда будут найдены все скрытые детали.", stage: 1 },
+];
 
 export const MESSAGE_SLOTS = [
   "реальный фрагмент переписки 01",
