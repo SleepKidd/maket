@@ -34,7 +34,7 @@ for (const match of app.matchAll(/from\s+"(\.\/[^"]+)"/g)) {
 assert(app.includes("enhanceStory()"), "Decorative enhancement not initialized");
 assert(app.includes("await createBotanicalWorld"), "WebGL error handling must be async");
 assert(app.includes("initLoveExperience()"), "Letter interaction initialization missing");
-assert(app.includes('this.sections = $(".scene")'), "Scene manager must iterate a list, not one element");
+assert(app.includes('this.sections = $$(".scene")'), "Scene manager must iterate a list, not one element");
 const webgl = read("src/webgl/world.js");
 assert(webgl.includes("InstancedMesh"), "Flowers should be instanced");
 assert(webgl.includes("petalGeometry"), "Curved petal geometry missing");
