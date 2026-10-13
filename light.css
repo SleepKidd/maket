@@ -8,11 +8,11 @@
 html {background:var(--bg);color-scheme:light;scroll-behavior:smooth;scroll-padding-top:74px}
 body {color:var(--ink);background:#fffaf6;overflow-x:clip}
 .site-shell{background:transparent}
-#world { z-index:0; opacity:.96; mix-blend-mode:multiply; }
+#world { z-index:0; opacity:.96; }
 .world-fallback {z-index:0;opacity:.8;background:radial-gradient(ellipse at 88% 18%,#f9d9e5 0,transparent 31%),radial-gradient(ellipse at 3% 85%,#f8ddcf 0,transparent 33%);}
 .world-fallback i{border-left:1px solid #ce9aaa}
 .world-fallback span{border-color:#e6abb8;box-shadow:0 0 80px #f2ccd3}
-.grain{z-index:25;opacity:.19;background-image:radial-gradient(#9f7980 .44px,transparent .58px);background-size:7px 7px;mix-blend-mode:multiply}
+.grain{z-index:25;opacity:.19;background-image:radial-gradient(#9f7980 .44px,transparent .58px);background-size:7px 7px;}
 #story{z-index:2}
 .topbar{z-index:46;color:#725861;mix-blend-mode:normal;background:linear-gradient(#fffaf8ec 5%,#fffaf800);height:76px;padding:calc(8px + env(safe-area-inset-top)) 6vw 8px}
 .wordmark{color:#7b4664;font-size:16px;letter-spacing:.08em;font-family:var(--serif);font-weight:700}
@@ -34,10 +34,10 @@ h2 em,.accent{color:#bf7a8f}
 .scene-copy{position:relative;z-index:3}
 .scene-note{color:#9e8390;font-size:9px}
 .scene-note::before{background:#c98ea0}
-.prologue{justify-content:center;align-items:center;min-height:100svh;padding-top:15vh;padding-bottom:12vh}
-.prologue::before{background:radial-gradient(ellipse at 50% 42%,#fffdfb88,transparent 42%),radial-gradient(ellipse at 80% 13%,#f6dce49c,transparent 44%),radial-gradient(ellipse at 16% 78%,#f5e1dca6,transparent 40%)}
-.prologue::after{display:none}
-.prologue .hero-copy{margin-top:22vh;position:relative;z-index:6}
+.prologue-scene{justify-content:center;align-items:center;min-height:100svh;padding-top:15vh;padding-bottom:12vh}
+.prologue-scene::before{background:radial-gradient(ellipse at 50% 42%,#fffdfb88,transparent 42%),radial-gradient(ellipse at 80% 13%,#f6dce49c,transparent 44%),radial-gradient(ellipse at 16% 78%,#f5e1dca6,transparent 40%)}
+.prologue-scene::after{display:none}
+.prologue-scene .hero-copy{margin-top:22vh;position:relative;z-index:6}
 .hero-copy .eyebrow{color:#97687b;letter-spacing:.4em}
 .hero-title{color:#603a52;font-size:clamp(78px,19vw,238px);line-height:.78;letter-spacing:-.11em;text-shadow:0 8px 45px #f2c7dba9}
 .hero-title span{color:#99556e;font-size:clamp(9px,1.4vw,13px);letter-spacing:.47em;margin-top:28px}
@@ -138,16 +138,16 @@ body.is-fallback #world{display:none}
 body.is-fallback .world-fallback{opacity:1}
 /* botanical vignette / animated page details injected by light-effects.js */
 .atelier-progress{position:fixed;top:0;left:0;z-index:60;height:3px;width:100%;pointer-events:none;background:linear-gradient(90deg,#c68b9f,#b6c6aa,#e6b68b);transform:scaleX(var(--progress,0));transform-origin:left;transition:transform .12s linear}
-.botanical-corner{position:absolute;z-index:1;width:clamp(105px,27vw,290px);height:auto;opacity:.75;pointer-events:none;filter:drop-shadow(0 6px 12px #bca6af2b);animation:botanic-sway 9s ease-in-out infinite alternate;transform-origin:65% 94%}
+.botanical-corner{position:absolute;z-index:1;width:clamp(105px,27vw,290px);height:auto;opacity:.75;pointer-events:none;animation:botanic-sway 9s ease-in-out infinite alternate;transform-origin:65% 94%}
 .botanical-corner--left{left:-4%;top:12%;transform:rotate(-18deg)}
 .botanical-corner--right{right:-7%;bottom:2%;transform:scaleX(-1) rotate(-9deg);animation-delay:-4s}
 .scene:nth-child(3n) .botanical-corner{opacity:.46}
-.prologue .botanical-corner{width:clamp(175px,40vw,440px);opacity:.93}
-.prologue .botanical-corner--left{left:-6%;top:9%}
-.prologue .botanical-corner--right{right:-5%;bottom:10%}
+.prologue-scene .botanical-corner{width:clamp(175px,40vw,440px);opacity:.93}
+.prologue-scene .botanical-corner--left{left:-6%;top:9%}
+.prologue-scene .botanical-corner--right{right:-5%;bottom:10%}
 .botanical-orbit{position:absolute;z-index:0;border:1px solid #d6a8b65f;border-radius:50%;width:clamp(260px,55vw,680px);aspect-ratio:1;left:50%;top:17%;transform:translateX(-50%) rotate(-16deg);pointer-events:none}
 .botanical-orbit::after{content:"";position:absolute;inset:9%;border:1px dashed #cda6b247;border-radius:50%}
-.prologue .botanical-orbit{top:11%;width:clamp(310px,62vw,720px)}
+.prologue-scene .botanical-orbit{top:11%;width:clamp(310px,62vw,720px)}
 .scene-flourish{position:absolute;z-index:1;color:#ba8a9c;font:italic 24px var(--serif);pointer-events:none;opacity:.85}
 .scene-flourish--one{right:8%;top:17%;transform:rotate(11deg)}
 .scene-flourish--two{left:8%;bottom:13%;transform:rotate(-10deg)}
@@ -172,7 +172,7 @@ body.is-fallback .world-fallback{opacity:1}
  .scene-kicker{top:103px;left:9vw;right:9vw}
  .scene::after{left:9vw;right:9vw}
  .hero-title{font-size:clamp(105px,14vw,245px)}
- .prologue .hero-copy{margin-top:18vh}
+ .prologue-scene .hero-copy{margin-top:18vh}
  .botanical-corner--left{left:1%}
  .botanical-corner--right{right:1%}
  .atelier-stamp{width:105px;height:105px}
@@ -184,9 +184,9 @@ body.is-fallback .world-fallback{opacity:1}
  .topbar{padding-left:5vw;padding-right:5vw}
  .scene-kicker{left:5vw;right:5vw}
  .scene{padding:120px 5vw 75px}
- .prologue .hero-copy{margin-top:19vh}
- .prologue .botanical-corner--left{top:10%;left:-18%}
- .prologue .botanical-corner--right{right:-17%;bottom:18%}
+ .prologue-scene .hero-copy{margin-top:19vh}
+ .prologue-scene .botanical-corner--left{top:10%;left:-18%}
+ .prologue-scene .botanical-corner--right{right:-17%;bottom:18%}
  .botanical-orbit{top:20%}
  .atelier-stamp{right:5vw;bottom:8vh;width:65px;height:65px;font-size:14px}
  .floating-petals i:nth-child(n+8){display:none}
@@ -201,3 +201,17 @@ body.is-fallback .world-fallback{opacity:1}
  .scene.reveal-enabled .scene-copy,.scene.reveal-enabled .photo-row,.scene.reveal-enabled .number-ghost,.scene.reveal-enabled .gallery-grid,.scene.reveal-enabled .polaroid-stack{opacity:1;translate:0;transition:none}
 }
 @media (prefers-reduced-transparency:reduce){.glass-card,.letter-wrap{backdrop-filter:none;background:#fffaf7}}
+
+/* more deliberately staged editorial details */
+.timeline-node::after{content:"";position:absolute;left:10px;top:-22px;width:22px;height:40px;border-radius:90% 2% 85% 2%;background:linear-gradient(140deg,#c5d6bc,#78a58b);transform:rotate(-40deg);opacity:.85}
+.timeline-node:nth-child(odd)::after{left:28px;transform:scaleX(-1) rotate(-35deg)}
+.film-frame:nth-child(3n){transform:rotate(-4deg) translateX(9px)}
+.film-frame:nth-child(4n){transform:rotate(5deg) translateX(-8px)}
+.photo-slot:not(.has-image):nth-child(4n+1){background:radial-gradient(circle at 75% 19%,#fffaf0 0,transparent 32%),linear-gradient(145deg,#f8dfe1,#eee0e5 60%,#fbebdb)}
+.photo-slot:not(.has-image):nth-child(4n+2){background:radial-gradient(circle at 30% 25%,#fff8ed 0,transparent 38%),linear-gradient(145deg,#e7e8dc,#f4dbe3 67%,#fff1e5)}
+.photo-slot:not(.has-image):nth-child(4n+3){background:radial-gradient(circle at 65% 70%,#fff8e9 0,transparent 36%),linear-gradient(145deg,#f5e4cf,#e4d5df 75%,#fceee9)}
+.scene--you .portrait-stack .photo-slot{box-shadow:0 28px 45px #97779239}
+.scene--days .number-ghost,.scene--year .number-ghost{color:#e1b1c479}
+.hero-copy{animation:hero-enter 1.3s cubic-bezier(.2,.8,.3,1) both}
+@keyframes hero-enter{from{opacity:0;translate:0 18px}to{opacity:1;translate:0 0}}
+@media (prefers-reduced-motion:reduce){.hero-copy{animation:none}}
