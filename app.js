@@ -100,17 +100,21 @@ function renderStory() { $("#story").innerHTML = SCENES.map(renderScene).join(""
 class SceneManager {
   constructor({ world }) {
     this.world = world;
-    this.sections = $$(".scene");
+    this.sections = $(".scene");
     this.current = null;
-    this.observer = new IntersectionObserver((entries) => this.onIntersect(entries), { threshold: [0, .2, .55, .85], rootMargin: "100% 0px" });
+    this.visible = new Map();
+    this.observer = new IntersectionObserver((entries) => this.onIntersect(entries), { threshold: [0, .2, .55, .85], rootMargin: "-12% 0px -12% 0px" });
     this.sections.forEach((section) => this.observer.observe(section));
   }
 
   onIntersect(entries) {
-    const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-    if (!visible) return;
-    const scene = visible.target;
-    if (scene === this.current) return;
+    for (const entry of entries) {
+      if (entry.isIntersecting) this.visible.set(entry.target, entry.intersectionRatio);
+      else this.visible.delete(entry.target);
+    }
+    const candidates = [...this.visible.entries()].sort((a, b) => b[1] - a[1]);
+    const scene = candidates[0]?.[0];
+    if (!scene || scene === this.current) return;
     this.current = scene;
     const stage = Number(scene.dataset.stage || 0);
     $("#sceneIndex").textContent = scene.dataset.index || "00";
@@ -247,12 +251,12 @@ function setupDebug({ quality, world }) {
   return (now) => { frames += 1; if (now - last > 500) { fps = Math.round(frames * 1000 / (now - last)); frames = 0; last = now; const stats = world?.stats?.() || {}; overlay.textContent = `FPS ${fps} · ${quality.getName()} · calls ${stats.drawCalls || 0} · tris ${stats.triangles || 0}`; } };
 }
 
-function boot() {
+async function boot() {
   renderStory();
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) document.body.classList.add("is-reduced-motion");
   const quality = new QualityManager();
   let world = null;
-  try { world = createBotanicalWorld($("#world"), { ...quality.get(), profile: quality.profile }); } catch (error) { console.warn("WebGL fallback:", error); }
+  try { world = await createBotanicalWorld($("#world"), { ...quality.get(), profile: quality.profile }); } catch (error) { console.warn("WebGL fallback:", error); }
   if (!world) document.body.classList.add("is-fallback");
   const input = new InputManager({ onChange: (state) => world?.setPointer(state.x, state.y, state.velocity) });
   const audio = new AudioManager();
@@ -269,4 +273,4 @@ function boot() {
   window.__MILANA_DEBUG__ = { quality, world, scheduler, sceneManager };
 }
 
-boot();
+boot().catch((error) => { console.error("MILANA initialization failed:", error); document.body.classList.add("is-fallback"); });
