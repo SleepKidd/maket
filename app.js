@@ -47,7 +47,7 @@ function renderScene(scene) {
     case "before":
       return `<section ${common}>${sceneKicker(scene, "Когда ещё не было «нас»")}${sceneCopy(scene)}<div class="photo-row">${photoSlots(scene.slots)}</div><p class="scene-note">Расстояние исчезает во время scroll — drag не обязателен</p></section>`;
     case "date":
-      return `<section ${common}>${sceneKicker(scene, "начало") }<div class="scene-copy scene-copy--center"><p class="eyebrow">${esc(scene.kicker)}</p><div class="date-number">18<span>.</span>11<span>.</span>24</div><p>${esc(scene.copy)}</p><button class="memory-trigger" type="button" data-secret="${esc(SECRETS[0].text)}">открыть воспоминание ↗</button></div>${photoSlot({ label: "ваше первое важное фото", category: "beginning", ratio: "4 / 5" }, "date-photo")}<p class="scene-note">Дата остаётся в центре, а личный текст появится после архива</p></section>`;
+      return `<section ${common}>${sceneKicker(scene, "начало") }<div class="scene-copy scene-copy--center"><p class="eyebrow">${esc(scene.kicker || scene.chapter || "Тот самый день")}</p><div class="date-number">18<span>.</span>11<span>.</span>24</div><p>${esc(scene.copy)}</p><button class="memory-trigger" type="button" data-secret="${esc(SECRETS[0].text)}">открыть воспоминание ↗</button></div>${photoSlot({ label: "ваше первое важное фото", category: "beginning", ratio: "4 / 5" }, "date-photo")}<p class="scene-note">Дата остаётся в центре, а личный текст появится после архива</p></section>`;
     case "tunnel":
       return `<section ${common}>${sceneKicker(scene, "вертикальный photo tunnel")}${sceneCopy(scene)}<div class="tunnel">${photoSlots(scene.slots)}</div></section>`;
     case "film":
