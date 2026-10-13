@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#080706" />
+    <meta name="description" content="MILANA — TWO YEARS. Интерактивная история двух лет вместе." />
+    <title>MILANA — TWO YEARS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="site-shell">
+      <canvas id="world" aria-hidden="true"></canvas>
+      <div class="grain" aria-hidden="true"></div>
+      <div class="vignette" aria-hidden="true"></div>
+
+      <header class="topbar">
+        <a class="wordmark" href="#intro" aria-label="В начало">M / M</a>
+        <div class="topbar-meta"><span id="sceneIndex">00</span><span class="slash">/</span><span>18</span></div>
+        <button class="sound-toggle" id="soundToggle" type="button" aria-label="Включить звук"><span class="sound-dot"></span><span id="soundLabel">звук</span></button>
+      </header>
+
+      <main id="story">
+        <section class="scene scene--hero" id="intro" data-scene="hero" data-index="00">
+          <div class="hero-copy">
+            <p class="eyebrow fade-in">Для Миланы</p>
+            <h1 class="hero-title">MILANA<span>— TWO YEARS</span></h1>
+            <p class="hero-date">18.11.2024 <i>—</i> 13.10.2026</p>
+            <button class="begin-button" id="beginButton" type="button"><span class="button-ring"></span><span>Коснись, чтобы начать</span><span class="button-arrow">↘</span></button>
+            <p class="hero-note">Музыка и живое пространство включатся после касания</p>
+          </div>
+          <div class="hero-mark">01<br /><span>из двух лет</span></div>
+          <div class="scroll-cue"><span></span>листай историю</div>
+        </section>
+
+        <section class="scene scene--split" id="before-us" data-scene="before" data-index="01">
+          <div class="section-kicker"><span>ГЛАВА I</span><span>Когда ещё не было «нас»</span></div>
+          <div class="split-intro">
+            <p class="eyebrow">До нас</p>
+            <h2>Два человека.<br /><em>Одна будущая история.</em></h2>
+            <p class="lede">Две разные жизни, которые ещё не знали, что однажды начнут звучать вместе.</p>
+          </div>
+          <div class="orbit-photos">
+            <article class="photo-card photo-card--left placeholder-photo"><span>твоя фотография</span><b>до нас</b></article>
+            <article class="photo-card photo-card--right placeholder-photo"><span>фотография Миланы</span><b>до нас</b></article>
+            <div class="orbit-line"></div>
+          </div>
+          <p class="scroll-caption">Проведи пальцем — расстояние между ними исчезает</p>
+        </section>
+
+        <section class="scene scene--date" id="first-day" data-scene="date" data-index="02">
+          <div class="date-glow"></div>
+          <div class="scene-content scene-content--center">
+            <p class="eyebrow">Тот самый день</p>
+            <div class="date-hero">18<span>.</span>11<span>.</span>24</div>
+            <p class="date-description">День, с которого «я» и «ты» начали понемногу превращаться в «мы».</p>
+            <button class="ghost-action memory-trigger" type="button" data-secret="В этой дате спрятано начало всего. Здесь позже появится ваша настоящая история знакомства.">открыть воспоминание <span>↗</span></button>
+          </div>
+          <div class="floating-polaroid placeholder-photo"><span>ваше первое важное фото</span><b>18.11.24</b></div>
+        </section>
+
+        <section class="scene scene--tunnel" id="beginning" data-scene="tunnel" data-index="03">
+          <div class="section-kicker"><span>ГЛАВА II</span><span>Самое начало</span></div>
+          <div class="scene-content scene-content--left">
+            <p class="eyebrow">Первые недели</p>
+            <h2>Всё было<br /><em>впервые.</em></h2>
+            <p class="lede">Первые прогулки. Первые привычки. Первые фотографии, которые хотелось сохранять даже без причины.</p>
+          </div>
+          <div class="memory-tunnel" id="memoryTunnel">
+            <article class="tunnel-card placeholder-photo"><span>место, где гуляли</span><b>01</b></article>
+            <article class="tunnel-card placeholder-photo"><span>первый смешной кадр</span><b>02</b></article>
+            <article class="tunnel-card placeholder-photo"><span>самый тёплый вечер</span><b>03</b></article>
+            <article class="tunnel-card placeholder-photo"><span>деталь того времени</span><b>04</b></article>
+            <article class="tunnel-card placeholder-photo"><span>кадр, который нельзя забыть</span><b>05</b></article>
+          </div>
+        </section>
+
+        <section class="scene scene--film" id="film" data-scene="film" data-index="04">
+          <div class="section-kicker"><span>ПЕРВЫЕ МЕСЯЦЫ</span><span>живая фотоплёнка</span></div>
+          <div class="film-heading"><p class="eyebrow">Кадр за кадром</p><h2>Мы учились<br /><em>быть рядом.</em></h2></div>
+          <div class="film-strip" id="filmStrip">
+            <div class="film-sprockets"></div>
+            <article class="film-frame placeholder-photo"><span>добавить фото</span><b>18.11.24</b></article>
+            <article class="film-frame placeholder-photo"><span>добавить фото</span><b>декабрь</b></article>
+            <article class="film-frame placeholder-photo"><span>добавить фото</span><b>январь</b></article>
+            <article class="film-frame placeholder-photo"><span>добавить фото</span><b>февраль</b></article>
+            <article class="film-frame placeholder-photo"><span>добавить фото</span><b>март</b></article>
+            <div class="film-sprockets"></div>
+          </div>
+          <p class="scroll-caption">Проводи по кадрам. Здесь появятся ваши первые месяцы.</p>
+        </section>
+
+        <section class="scene scene--month" id="month" data-scene="month" data-index="05">
+          <div class="month-number">30</div>
+          <div class="month-copy"><p class="eyebrow">Первый месяц</p><h2>дней<br /><em>вместе</em></h2><p>Не круглая дата. Просто первая, которую хотелось отметить.</p></div>
+          <div class="polaroid-stack">
+            <article class="polaroid placeholder-photo"><span>ваше фото</span><b>30 дней</b></article>
+            <article class="polaroid placeholder-photo"><span>ваше фото</span><b>самое начало</b></article>
+            <article class="polaroid placeholder-photo"><span>ваше фото</span><b>ещё один день</b></article>
+          </div>
+          <button class="drag-hint" type="button"><span>↔</span> сдвинь верхний кадр</button>
+        </section>
+
+        <section class="scene scene--desk" id="desk" data-scene="desk" data-index="06">
+          <div class="section-kicker"><span>АРХИВ</span><span>интерактивный стол</span></div>
+          <div class="desk-copy"><p class="eyebrow">Вещи, которые помнят</p><h2>У каждой<br /><em>свой вес.</em></h2><p class="lede">Фотографии, записки и маленькие предметы, которые хранят больше, чем кажется.</p></div>
+          <div class="memory-desk">
+            <div class="desk-paper paper-note">«здесь будет ваша<br />настоящая записка»</div>
+            <div class="desk-ticket">18<br /><small>NOV</small></div>
+            <article class="desk-photo placeholder-photo"><span>перетащи меня</span><b>photo 01</b></article>
+            <article class="desk-photo desk-photo--under placeholder-photo"><span>что было под ним</span><b>photo 02</b></article>
+            <div class="desk-flower">✳</div>
+          </div>
+          <p class="scroll-caption">Потяни фотографию — под ней спрятано ещё одно воспоминание</p>
+        </section>
+
+        <section class="scene scene--everyday" id="everyday" data-scene="everyday" data-index="07">
+          <div class="everyday-copy"><p class="eyebrow">Галерея случайных моментов</p><h2>Самые<br /><em>обычные дни.</em></h2><p>Сонные, кривые, смешные. Именно из них и складывается настоящая жизнь.</p></div>
+          <div class="everyday-grid">
+            <article class="snap snap--wide placeholder-photo"><span>случайный кадр</span></article>
+            <article class="snap placeholder-photo"><span>сонное утро</span></article>
+            <article class="snap snap--tall placeholder-photo"><span>смешной момент</span></article>
+            <article class="snap placeholder-photo"><span>еда / улица / руки</span></article>
+            <article class="snap snap--wide placeholder-photo"><span>фото, которое не планировали делать</span></article>
+          </div>
+        </section>
+
+        <section class="scene scene--timeline" id="timeline" data-scene="timeline" data-index="08">
+          <div class="section-kicker"><span>ВРЕМЯ</span><span>цветочная линия</span></div>
+          <div class="timeline-copy"><p class="eyebrow">Мы росли вместе</p><h2>Каждая дата<br /><em>оставляет лист.</em></h2></div>
+          <div class="timeline-plant"><div class="timeline-stem"></div><div class="timeline-node node-1"><span>1 месяц</span></div><div class="timeline-node node-2"><span>3 месяца</span></div><div class="timeline-node node-3"><span>6 месяцев</span></div><div class="timeline-node node-4"><span>1 год</span></div><div class="timeline-node node-5"><span>2 года</span></div></div>
+          <p class="scroll-caption">Листай — ветвь растёт вместе с историей</p>
+        </section>
+
+        <section class="scene scene--half" id="half-year" data-scene="half" data-index="09">
+          <div class="half-hero">182</div>
+          <div class="half-copy"><p class="eyebrow">Полгода</p><h2>Бутон<br /><em>раскрылся.</em></h2><p>К этому моменту рядом уже можно было молчать, смеяться и всё равно понимать друг друга.</p></div>
+          <div class="half-photo placeholder-photo"><span>главное фото этого периода</span><b>182 DAYS</b></div>
+        </section>
+
+        <section class="scene scene--places" id="places" data-scene="places" data-index="10">
+          <div class="places-copy"><p class="eyebrow">Наши места</p><h2>Где мы<br /><em>становились нами.</em></h2><p>Нажимай на светящиеся точки. Здесь позже появятся ваши реальные маршруты и истории.</p></div>
+          <div class="memory-map" id="memoryMap"><div class="map-route"></div><button class="map-pin pin-1" type="button" data-place="место №1 — первая прогулка">01</button><button class="map-pin pin-2" type="button" data-place="место №2 — день, который запомнился">02</button><button class="map-pin pin-3" type="button" data-place="место №3 — ваш маленький мир">03</button><button class="map-pin pin-4" type="button" data-place="место №4 — однажды потом">04</button><div class="map-label">ваша карта<br /><span>5–10 важных мест</span></div></div>
+          <div class="place-popover" id="placePopover"><button class="close-popover" type="button">×</button><span class="eyebrow">точка маршрута</span><p id="placeText">—</p></div>
+        </section>
+
+        <section class="scene scene--messages" id="messages" data-scene="messages" data-index="11">
+          <div class="messages-backdrop"></div>
+          <div class="messages-copy"><p class="eyebrow">Переписки</p><h2>То, что<br /><em>остаётся между строк.</em></h2></div>
+          <div class="chat-stack">
+            <div class="chat-line chat-line--time">00:47</div><div class="chat-bubble chat-bubble--her">ты спишь?</div><div class="chat-bubble chat-bubble--me">уже нет</div><div class="chat-bubble chat-bubble--her">тогда расскажи мне что-нибудь</div><div class="chat-line chat-line--date">18 / 11 / 2024</div>
+          </div>
+          <button class="secret-note memory-trigger" type="button" data-secret="Здесь будет фрагмент переписки, который хочется сохранить не из-за слов, а из-за того, что ты чувствовал в тот момент.">это я никогда не говорил тебе…</button>
+        </section>
+
+        <section class="scene scene--year" id="year" data-scene="year" data-index="12">
+          <div class="year-number">365</div>
+          <div class="year-copy"><p class="eyebrow">Год</p><h2>Первый<br /><em>настоящий пик.</em></h2><p>365 дней — уже не случайность. Уже свой язык, свои шутки, свои «пойдём просто погуляем».</p></div>
+          <div class="year-photo placeholder-photo"><span>главная фотография первого года</span><b>365 DAYS</b></div>
+        </section>
+
+        <section class="scene scene--you" id="you" data-scene="you" data-index="13">
+          <div class="silk-ribbon"></div>
+          <div class="you-copy"><p class="eyebrow">Глава «Ты»</p><h2>В тебе<br /><em>целая вселенная.</em></h2><p>Здесь будут портреты Миланы — не галерея «по двадцать картинок подряд», а отдельные маленькие сцены.</p></div>
+          <div class="portrait-stack"><article class="portrait portrait--one placeholder-photo"><span>портрет + цветы</span></article><article class="portrait portrait--two placeholder-photo"><span>портрет + свет</span></article><article class="portrait portrait--three placeholder-photo"><span>портрет + отражение</span></article></div>
+        </section>
+
+        <section class="scene scene--love" id="love" data-scene="love" data-index="14">
+          <div class="love-copy"><p class="eyebrow">Я люблю…</p><h2><span>твой смех.</span><span>твой взгляд.</span><span>то, как ты…</span><span>остаёшься собой.</span></h2><p class="scroll-caption">Скролл — и следующая мысль появляется из темноты</p></div>
+        </section>
+
+        <section class="scene scene--then-now" id="then-now" data-scene="then-now" data-index="15">
+          <div class="then-now-header"><p class="eyebrow">Then / Now</p><h2>730 дней<br /><em>между двумя кадрами.</em></h2></div>
+          <div class="compare-frame"><div class="compare-image compare-image--then placeholder-photo"><span>самая ранняя совместная</span><b>THEN</b></div><div class="compare-image compare-image--now placeholder-photo"><span>одна из последних</span><b>NOW</b></div><div class="compare-divider" id="compareDivider"><span>↔</span></div></div>
+          <div class="compare-caption"><span>тогда</span><strong>730 DAYS</strong><span>сейчас</span></div>
+        </section>
+
+        <section class="scene scene--voice" id="voice" data-scene="voice" data-index="16">
+          <div class="voice-copy"><p class="eyebrow">Перед финалом</p><h2>Теперь просто<br /><em>послушай меня.</em></h2><p>Здесь появится твоё голосовое сообщение. Никакой графики поверх — только голос, фотографии и время.</p><button class="voice-button" id="voiceButton" type="button"><span>▶</span> включить голосовое</button></div>
+          <div class="voice-wave" id="voiceWave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </section>
+
+        <section class="scene scene--finale" id="finale" data-scene="finale" data-index="17">
+          <div class="finale-number">730</div>
+          <p class="finale-subtitle">дней с тобой</p>
+          <div class="finale-portrait placeholder-photo"><span>свежая совместная фотография</span></div>
+          <div class="finale-line"><span>Два года.</span><strong>И я всё ещё выбираю тебя.</strong></div>
+        </section>
+
+        <section class="scene scene--letter" id="letter" data-scene="letter" data-index="18">
+          <div class="letter-wrap"><p class="eyebrow">Письмо</p><h2>Милана,</h2><p class="letter-placeholder">Здесь будет настоящее письмо — не выдуманный текст из генератора, а твои слова: с вашими фактами, смешными деталями, неловкими моментами и всем тем, что за два года стало вашим.</p><p class="letter-placeholder">Когда ты пришлёшь мне историю, я превращу её в цельный финальный монолог на 700–1500 слов и оставлю вокруг достаточно тишины, чтобы он действительно прозвучал.</p><div class="letter-sign">Я люблю тебя.<br /><span>И это только первые два года.</span></div><button class="replay-button" id="replayButton" type="button">↻ replay <span>2024 — ∞</span></button></div>
+        </section>
+      </main>
+
+      <div class="secret-modal" id="secretModal" aria-hidden="true"><div class="secret-modal-inner"><button class="close-modal" type="button">×</button><p class="eyebrow">скрытое воспоминание</p><p id="secretText"></p><span class="secret-symbol">✦</span></div></div>
+      <div class="toast" id="toast" role="status"></div>
+    </div>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
