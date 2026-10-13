@@ -1,3 +1,4 @@
+import { INTERLUDE_NOTES } from "../data/love-letters.js";
 /* Editorial floral motifs and lightweight motion. No per-element RAF. */
 const flowerMarkup = (variant = 0) => {
   const shade = variant % 2 ? "#cb89a4" : "#e2a9a5";
@@ -90,6 +91,18 @@ export function enhanceStory() {
       annotation.textContent = index % 2 ? "✳" : "✦";
       annotation.setAttribute("aria-hidden","true");
       scene.append(annotation);
+    }
+    const personalNote = INTERLUDE_NOTES[scene.id];
+    if (personalNote) {
+      const whisper = document.createElement("aside");
+      whisper.className = "scene-whisper";
+      whisper.setAttribute("aria-label", "Маленькое признание");
+      const quote = document.createElement("p");
+      quote.textContent = personalNote;
+      const sign = document.createElement("span");
+      sign.textContent = "для тебя · с любовью";
+      whisper.append(quote, sign);
+      scene.append(whisper);
     }
     if (index > 0) scene.classList.add("reveal-enabled");
   });
