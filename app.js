@@ -174,8 +174,9 @@ function setupInteractions({ audio, input }) {
     beginButton.disabled = true;
     beginButton.setAttribute("aria-label", "История началась");
     const played = await audio.start();
-    if (!played) showToast("Аудио-слот готов — добавим настоящий трек после получения файла");
+    if (!played && audio.music) showToast("Не удалось воспроизвести музыку");
     if (navigator.vibrate) navigator.vibrate(10);
+    document.getElementById("before-us")?.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth", block: "start" });
     /* Motion sensors are optional: normal touch interaction works without permission prompts. */
   });
 
@@ -183,7 +184,7 @@ function setupInteractions({ audio, input }) {
     const enabled = audio.toggle();
     $("#soundToggle").setAttribute("aria-pressed", String(enabled));
     $("#soundLabel").textContent = enabled ? "вкл" : "выкл";
-    if (!audio.music) showToast("Музыка будет подключена из assets/audio/relationship.mp3");
+
   });
 
   const placePopover = $("[data-place-popover]");
@@ -259,7 +260,9 @@ async function boot() {
   try { world = await createBotanicalWorld($("#world"), { ...quality.get(), profile: quality.profile }); } catch (error) { console.warn("WebGL fallback:", error); }
   if (!world) document.body.classList.add("is-fallback");
   const input = new InputManager({ onChange: (state) => world?.setPointer(state.x, state.y, state.velocity) });
-  const audio = new AudioManager();
+  const audio = new AudioManager({ musicSrc: RELATIONSHIP.musicSrc, voiceSrc: RELATIONSHIP.voiceSrc });
+  if (!audio.music) $("#soundToggle").hidden = true;
+  if (!audio.voice) { const voiceButton = $("#voiceButton"); if (voiceButton) { voiceButton.disabled = true; voiceButton.textContent = "Здесь появится голосовое"; } }
   const sceneManager = new SceneManager({ world });
   let lastQuality = quality.getName();
   new AssetManager();
