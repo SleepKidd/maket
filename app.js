@@ -2,7 +2,7 @@ import { RELATIONSHIP, SCENES, SECRETS, MESSAGE_SLOTS, PLACE_SLOTS, LETTER_MOMEN
 import { QualityManager, Scheduler } from "./src/core/quality.js";
 import { InputManager } from "./src/core/input.js";
 import { AudioManager } from "./src/core/audio.js";
-import { createBotanicalWorld } from "./src/webgl/world.js";
+import { createBotanicalWorld } from "./src/webgl/world.js?v=positive-vibe-3d";
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];

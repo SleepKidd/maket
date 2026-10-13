@@ -81,6 +81,49 @@ function createLeafGeometry() {
   return geometry;
 }
 
+// The uploaded reference is a glossy tulip-like bloom. This geometry keeps
+// its broad cupped petals while staying small enough for mobile instancing.
+function createVibePetalGeometry() {
+  const geometry = new THREE.BufferGeometry();
+  const rows = 7;
+  const columns = 7;
+  const positions = [];
+  const uvs = [];
+  const indices = [];
+  const widths = [0.04, 0.19, 0.36, 0.5, 0.56, 0.49, 0.32, 0.07];
+
+  for (let row = 0; row <= rows; row += 1) {
+    const t = row / rows;
+    const y = (t - 0.5) * 1.35;
+    const width = widths[row];
+    for (let column = 0; column <= columns; column += 1) {
+      const u = column / columns * 2 - 1;
+      const edge = Math.max(0, 1 - Math.pow(Math.abs(u), 1.7));
+      const x = u * width * edge;
+      const crown = Math.sin(t * Math.PI) * .12;
+      const cup = (1 - edge) * .035 + Math.sin(t * Math.PI) * edge * .055;
+      positions.push(x, y, crown + cup);
+      uvs.push(column / columns, t);
+    }
+  }
+
+  for (let row = 0; row < rows; row += 1) {
+    for (let column = 0; column < columns; column += 1) {
+      const a = row * (columns + 1) + column;
+      const b = a + 1;
+      const c = a + columns + 1;
+      const d = c + 1;
+      indices.push(a, c, b, b, c, d);
+    }
+  }
+
+  geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  geometry.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
+  geometry.setIndex(indices);
+  geometry.computeVertexNormals();
+  return geometry;
+}
+
 function createHeartGeometry() {
   const shape = new THREE.Shape();
   shape.moveTo(0, -1.05);
@@ -131,6 +174,7 @@ export function createBotanicalWorld(canvas, quality) {
   scene.add(ambient, warm, green);
 
   const petalGeometry = createPetalGeometry();
+  const vibePetalGeometry = createVibePetalGeometry();
   const leafGeometry = createLeafGeometry();
   const stemGeometry = new THREE.CylinderGeometry(.018, .027, 1.45, 5);
   const centerGeometry = new THREE.SphereGeometry(.12, 8, 6);
@@ -139,6 +183,7 @@ export function createBotanicalWorld(canvas, quality) {
   const leafMaterial = new THREE.MeshStandardMaterial({ color: 0x789276, roughness: .84, metalness: 0, side: THREE.DoubleSide });
   const stemMaterial = new THREE.MeshStandardMaterial({ color: 0x6f8a6c, roughness: .9, metalness: 0 });
   const centerMaterial = new THREE.MeshStandardMaterial({ color: 0xc89162, roughness: .6, metalness: .04, emissive: 0x5c3022, emissiveIntensity: .12 });
+  const vibePetalMaterial = new THREE.MeshPhysicalMaterial({ color: 0xd8537e, roughness: .3, metalness: .015, clearcoat: .52, clearcoatRoughness: .22, emissive: 0x6e1f3c, emissiveIntensity: .14, transparent: true, opacity: .05, side: THREE.DoubleSide });
   const heartMaterial = new THREE.MeshPhysicalMaterial({ color: 0xc9677f, roughness: .28, metalness: .04, clearcoat: .65, clearcoatRoughness: .18, emissive: 0x5c2237, emissiveIntensity: .12, transparent: true, opacity: .72 });
 
   const petalInstances = new THREE.InstancedMesh(petalGeometry, petalMaterial, quality.petals);
@@ -148,6 +193,14 @@ export function createBotanicalWorld(canvas, quality) {
   const centerInstances = new THREE.InstancedMesh(centerGeometry, centerMaterial, Math.max(quality.flowers, 5));
   [petalInstances, ivoryInstances, leafInstances, stemInstances, centerInstances].forEach((mesh) => mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage));
   botany.add(stemInstances, leafInstances, petalInstances, ivoryInstances, centerInstances);
+
+  const vibePetalCount = quality.profile === "low" ? 7 : quality.profile === "medium" ? 9 : 11;
+  const vibePetalInstances = new THREE.InstancedMesh(vibePetalGeometry, vibePetalMaterial, vibePetalCount);
+  const vibeLeafInstances = new THREE.InstancedMesh(leafGeometry, leafMaterial, 2);
+  const vibeStemInstance = new THREE.InstancedMesh(stemGeometry, stemMaterial, 1);
+  [vibePetalInstances, vibeLeafInstances, vibeStemInstance].forEach((mesh) => mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage));
+  const vibeCore = new THREE.Mesh(centerGeometry, centerMaterial);
+  botany.add(vibeStemInstance, vibeLeafInstances, vibePetalInstances, vibeCore);
 
   const heart = new THREE.Mesh(createHeartGeometry(), heartMaterial);
   heartGroup.add(heart);
@@ -209,6 +262,11 @@ export function createBotanicalWorld(canvas, quality) {
   const scale = new THREE.Vector3();
   const quaternion = new THREE.Quaternion();
   const euler = new THREE.Euler();
+  const vibeMatrix = new THREE.Matrix4();
+  const vibePosition = new THREE.Vector3();
+  const vibeScale = new THREE.Vector3();
+  const vibeQuaternion = new THREE.Quaternion();
+  const vibeEuler = new THREE.Euler();
 
   function updateSize() {
     const rect = canvas.getBoundingClientRect();
@@ -294,6 +352,68 @@ export function createBotanicalWorld(canvas, quality) {
     [petalInstances, ivoryInstances, leafInstances, stemInstances, centerInstances].forEach((mesh) => { mesh.instanceMatrix.needsUpdate = true; });
   }
 
+  function writeVibeFlower() {
+    const growth = clamp((sceneStage - .025) * 1.18, .015, 1);
+    const opening = clamp((growth - .12) * 1.16, 0, 1);
+    const breathing = 1 + Math.sin(time * .52) * .018;
+    const mobile = width < 720;
+    const baseX = mobile ? -.72 : 1.92;
+    const baseY = mobile ? -.98 : -1.03;
+    const baseZ = -1.58;
+    const flowerScale = mobile ? .82 : 1.04;
+
+    vibePetalMaterial.opacity += ((.02 + growth * .9) - vibePetalMaterial.opacity) * .1;
+    vibePosition.set(baseX, baseY - .38 + growth * .38, baseZ);
+    vibeEuler.set(0, pointerX * .055, Math.sin(time * .2) * .025 + pointerY * .025);
+    vibeQuaternion.setFromEuler(vibeEuler);
+    vibeScale.setScalar(flowerScale * (.54 + growth * .46));
+    vibeMatrix.compose(vibePosition, vibeQuaternion, vibeScale);
+    vibeStemInstance.setMatrixAt(0, vibeMatrix);
+
+    for (let i = 0; i < vibePetalCount; i += 1) {
+      const angle = i / vibePetalCount * Math.PI * 2 + .18;
+      const ring = .16 + opening * .22;
+      const height = .32 + opening * .2 + (i % 3) * .035;
+      vibePosition.set(
+        baseX + Math.cos(angle) * ring * flowerScale,
+        baseY + .43 * growth + height * growth,
+        baseZ + Math.sin(angle) * ring * .72 * flowerScale,
+      );
+      vibeEuler.set(
+        .4 - opening * .18 + pointerY * .028,
+        angle + Math.PI / 2 + pointerX * .035,
+        Math.sin(angle * 1.7) * .09,
+      );
+      vibeQuaternion.setFromEuler(vibeEuler);
+      vibeScale.set(
+        flowerScale * (.68 + opening * .08) * breathing,
+        flowerScale * (.78 + opening * .22) * breathing,
+        flowerScale * (.72 + opening * .08),
+      );
+      vibeMatrix.compose(vibePosition, vibeQuaternion, vibeScale);
+      vibePetalInstances.setMatrixAt(i, vibeMatrix);
+    }
+
+    const leafSpread = .26 + growth * .16;
+    for (let i = 0; i < 2; i += 1) {
+      const side = i ? 1 : -1;
+      vibePosition.set(baseX + side * leafSpread * flowerScale, baseY - .5 + i * .18, baseZ + .02);
+      vibeEuler.set(side * .46 + pointerY * .025, pointerX * .045, side * .64 + Math.sin(time * .28 + i) * .035);
+      vibeQuaternion.setFromEuler(vibeEuler);
+      vibeScale.setScalar(flowerScale * (.62 + growth * .28));
+      vibeMatrix.compose(vibePosition, vibeQuaternion, vibeScale);
+      vibeLeafInstances.setMatrixAt(i, vibeMatrix);
+    }
+
+    vibePosition.set(baseX, baseY + .18, baseZ + .08);
+    vibeScale.setScalar(flowerScale * (.42 + opening * .18));
+    vibeCore.position.copy(vibePosition);
+    vibeCore.scale.copy(vibeScale);
+    vibePetalInstances.instanceMatrix.needsUpdate = true;
+    vibeLeafInstances.instanceMatrix.needsUpdate = true;
+    vibeStemInstance.instanceMatrix.needsUpdate = true;
+  }
+
   function updateLoosePetals() {
     const attribute = looseGeometry.attributes.position;
     for (let i = 0; i < looseCount; i += 1) {
@@ -325,6 +445,7 @@ export function createBotanicalWorld(canvas, quality) {
     heart.position.y = Math.sin(time * .32) * .04;
     heartMaterial.opacity += ((.18 + scrollProgress * .62) - heartMaterial.opacity) * .06;
     if (frame++ % (quality.profile === "high" ? 1 : 2) === 0) writeInstances();
+    writeVibeFlower();
     updateLoosePetals();
     dust.rotation.y = time * .006;
     loosePetals.rotation.y = Math.sin(time * .12) * .08;
@@ -341,6 +462,7 @@ export function createBotanicalWorld(canvas, quality) {
     const isFinal = sceneId === "days" || sceneId === "finale";
     petalMaterial.color.set(isFinal ? 0xde8d9e : sceneId === "messages" ? 0xb77a89 : 0xd98f9f);
     ivoryMaterial.color.set(isFinal ? 0xffe7c7 : 0xf3dfcf);
+    vibePetalMaterial.color.set(isFinal ? 0xd64f77 : sceneId === "messages" ? 0xb05b76 : 0xd8537e);
     warm.intensity = isFinal ? 12 : sceneId === "letter" ? 3.5 : 7;
   }
 
@@ -349,11 +471,12 @@ export function createBotanicalWorld(canvas, quality) {
   function resize() { updateSize(); }
   function stats() { return { drawCalls: renderer.info.render.calls, triangles: renderer.info.render.triangles, textures: renderer.info.memory.textures }; }
   function dispose() {
-    [petalGeometry, leafGeometry, stemGeometry, centerGeometry, heart.geometry, petalMaterial, ivoryMaterial, leafMaterial, stemMaterial, centerMaterial, heartMaterial, dustGeometry, looseGeometry].forEach((resource) => resource.dispose?.());
+    [petalGeometry, vibePetalGeometry, leafGeometry, stemGeometry, centerGeometry, heart.geometry, petalMaterial, ivoryMaterial, leafMaterial, stemMaterial, centerMaterial, vibePetalMaterial, heartMaterial, dustGeometry, looseGeometry].forEach((resource) => resource.dispose?.());
     renderer.dispose();
   }
 
   updateSize();
   writeInstances();
+  writeVibeFlower();
   return { update, resize, setPointer, setScene, setScrollProgress, setActive, stats, dispose, renderer };
 }
