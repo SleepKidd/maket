@@ -82,7 +82,7 @@ try {
     assert.equal(await page.evaluate(() => window.scrollY), 0, `${device.name}: replay scroll reset`);
     assert(!(await page.locator("body").evaluate(el => el.classList.contains("started"))), `${device.name}: replay state`);
 
-    await page.locator(".prologue").screenshot({ path: resolve(shots, `${device.name}.png`) });
+    await page.locator(".prologue-scene").screenshot({ path: resolve(shots, `${device.name}.png`) });
     await page.locator(".before-scene").screenshot({ path: resolve(shots, `${device.name}-letters.png`) });
     assert.deepEqual(runtimeErrors, [], `${device.name}: runtime errors`);
     console.log(`${device.name}: OK | 26 scenes | 18 unique photos | 7 letter moments | touch-safe layout`);
