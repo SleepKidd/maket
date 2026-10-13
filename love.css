@@ -155,3 +155,14 @@
  .love-envelope,.love-envelope__art::after,.love-envelope__paper,.promise__plus,.tender-chip,.daynight-panel{transition:none!important;animation:none!important}
  .love-envelope:hover{transform:none}
 }
+
+/* The new letter shortcut must remain reachable on narrow phones. */
+.topbar-letters{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:44px;padding:4px 11px;margin-left:auto;border:1px solid #e6cfda;border-radius:30px;background:#fffaf9ca;color:#96627c;text-decoration:none;font:11px var(--sans);letter-spacing:.015em}
+.topbar-letters span{font-size:16px}
+.topbar-letters:hover,.topbar-letters:focus-visible{color:#7e4661;border-color:#c39bb0;outline-offset:3px}
+.topbar .topbar-meta{margin:0 12px}
+@media(max-width:365px){
+ .topbar .topbar-meta{font-size:9px;margin:0 7px}
+ .topbar-letters{font-size:10px;padding:4px 9px}
+ .sound-toggle{min-width:44px}
+}
