@@ -1,4 +1,4 @@
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js";
+let THREE;
 
 /* One scene, shared curved petal/leaf meshes, instanced botanical animation. */
 const clamp = (v,a,b) => Math.max(a, Math.min(b,v));
@@ -40,7 +40,9 @@ function leafGeometry() {
   }
   const geo=new THREE.BufferGeometry();geo.setAttribute("position",new THREE.Float32BufferAttribute(positions,3));geo.setIndex(indices);geo.computeVertexNormals();return geo;
 }
-export function createBotanicalWorld(canvas, initialQuality){
+export async function createBotanicalWorld(canvas, initialQuality){
+  try { THREE = await import("https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js"); }
+  catch (error) { console.warn("Three.js unavailable, using CSS floral fallback", error); return null; }
   const context=canvas.getContext("webgl2",{alpha:true,antialias:false,stencil:false,powerPreference:"low-power"})||
                 canvas.getContext("webgl",{alpha:true,antialias:false,stencil:false,powerPreference:"low-power"});
   if(!context) return null;
@@ -176,7 +178,7 @@ export function createBotanicalWorld(canvas, initialQuality){
     const fallCount=quality.profile==="high"?18:quality.profile==="medium"?11:6;
     for(let i=0;i<fallCount;i++){
       const f=fallingSpecs[i];
-      const y=(f.y*7-elapsed*f.speed)%7;
+      const y=((f.y*7-elapsed*f.speed)%7+7)%7;
       const x=f.x*(isMobile?2:5)+Math.sin(elapsed*.4+f.phase)*.34;
       const size=.12+(i%3)*.03;
       place(falling,i,x,y-3,f.z,size,size,size,
