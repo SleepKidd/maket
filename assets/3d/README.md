@@ -1,5 +1,7 @@
 # Botanical 3D reference
 
-`source/10650280.jpg` is the original 2800×2800 image from the user-provided archive, kept byte-for-byte and under its original filename.
+`source/10650280.jpg` remains as the untouched archive source.
 
-The archive did not contain a `.glb`, `.gltf`, `.fbx`, `.obj` or other 3D scene file. The flower visible in the site is therefore a real procedural Three.js model built from that reference: cupped glossy petals, stem, leaves, growth/opening animation and pointer response. The source image is not used as a fake 3D texture.
+`source/flower-original-cutout.png` is the production asset: the supplied flower is preserved, while the blue field is removed as real alpha transparency. The same asset is used by the Three.js plane and by the no-WebGL fallback, so the flower does not switch to a blue-backed JPEG on mobile.
+
+The 3D heart remains procedural in `src/webgl/world.js` and rotates through a full 360° as the story scrolls.

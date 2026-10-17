@@ -24,8 +24,8 @@ a { text-decoration: none; }
 .site-shell { position: relative; isolation: isolate; }
 #world, .world-fallback { position: fixed; inset: 0; width: 100vw; height: 100svh; pointer-events: none; }
 #world { z-index: -5; display: block; opacity: 1; mix-blend-mode: normal; }
-.world-fallback { z-index: -4; overflow: hidden; background: transparent; opacity: 1; }
-.reference-flower-fallback { position: absolute; top: 9%; left: 50%; width: min(92vw, 540px); height: auto; aspect-ratio: 1; object-fit: contain; transform: translateX(-50%); }
+.world-fallback { z-index: -4; overflow: hidden; background: transparent; opacity: 1; }\nbody:not(.is-fallback) .world-fallback { display: none; }
+.reference-flower-fallback { position: absolute; top: 9%; left: 50%; width: min(92vw, 540px); height: auto; aspect-ratio: 1; object-fit: contain; transform: translateX(-50%); filter: drop-shadow(0 28px 34px rgba(108, 56, 72, .12)); }
 .grain { position: fixed; inset: 0; z-index: 30; pointer-events: none; opacity: .08; background-image: radial-gradient(rgba(239, 231, 221, .24) .45px, transparent .7px); background-size: 5px 5px; }
 .topbar { position: fixed; z-index: 40; top: 0; left: 0; right: 0; display: flex; align-items: center; justify-content: space-between; height: 64px; padding: max(14px, env(safe-area-inset-top)) 20px 8px; color: var(--muted); font: 10px var(--mono); letter-spacing: .13em; text-transform: uppercase; pointer-events: none; }
 .topbar > * { pointer-events: auto; }

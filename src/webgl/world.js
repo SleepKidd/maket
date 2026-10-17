@@ -1,6 +1,6 @@
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js";
 
-const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+const clamp = (value, min, max) => Math.max(min, Math.min(max, value));\nconst FLOWER_ASSET = "./assets/3d/source/flower-original-cutout.png?v=transparent-flower-1";
 
 function createHeartGeometry() {
   const shape = new THREE.Shape();
@@ -23,15 +23,18 @@ function createHeartGeometry() {
   return geometry;
 }
 
-// The archive contains a finished 2800×2800 raster render, not a GLB/GLTF
-// scene. It is intentionally used as-is: no recolour, crop, alpha cutout,
-// blur or procedural replacement. The plane only gives the original pixels a
-// depth position in the Three.js composition.
+// The archive contains a finished 2800×2800 raster render. The production
+// asset is the same flower with the blue field removed as real alpha
+// transparency. The plane gives those original pixels a depth position in
+// the Three.js composition without inventing a different flower.
 function createReferenceFlower(texture) {
   const material = new THREE.MeshBasicMaterial({
     map: texture,
     side: THREE.DoubleSide,
     toneMapped: false,
+    transparent: true,
+    alphaTest: .015,
+    depthWrite: false,
   });
   const plane = new THREE.Mesh(new THREE.PlaneGeometry(2.8, 2.8), material);
   plane.frustumCulled = false;
@@ -66,7 +69,7 @@ export function createBotanicalWorld(canvas, quality) {
 
   let referenceFlower;
   const referenceTexture = new THREE.TextureLoader().load(
-    "./assets/3d/source/10650280.jpg?v=photo-15-asset-final",
+    FLOWER_ASSET,
     (texture) => {
       texture.colorSpace = THREE.SRGBColorSpace;
       texture.needsUpdate = true;
