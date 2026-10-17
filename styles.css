@@ -26,7 +26,22 @@ a { text-decoration: none; }
 #world { z-index: -5; display: block; opacity: 1; mix-blend-mode: normal; }
 .world-fallback { z-index: -4; overflow: hidden; background: transparent; opacity: 1; }
 body:not(.is-fallback) .world-fallback { display: none; }
-.fallback-botanical { position: absolute; inset: 0; overflow: hidden; }.reference-flower-fallback { position: absolute; width: min(76vw, 440px); height: auto; aspect-ratio: 1; object-fit: contain; opacity: .42; filter: brightness(.78) saturate(.74) drop-shadow(0 28px 34px rgba(108, 56, 72, .11)); will-change: transform; }.reference-flower-fallback.flower-a { top: -10%; left: auto; right: -19%; transform: rotate(-2deg); width: min(66vw, 380px); opacity: .46; } .reference-flower-fallback.flower-b { top: -9%; left: -22%; transform: rotate(-13deg); width: min(43vw, 250px); opacity: .30; } .reference-flower-fallback.flower-c { top: 26%; right: -19%; transform: rotate(11deg); width: min(42vw, 250px); opacity: .34; } .reference-flower-fallback.flower-d { top: 43%; left: -22%; transform: rotate(13deg); width: min(38vw, 225px); opacity: .28; } .reference-flower-fallback.flower-e { bottom: 8%; left: -21%; top: auto; transform: rotate(-16deg); width: min(43vw, 255px); opacity: .34; } .reference-flower-fallback.flower-f { bottom: -15%; left: auto; right: -15%; transform: rotate(@media (min-width: 720px) { .reference-flower-fallback.flower-a { top: 4%; left: auto; right: -5%; width: min(36vw, 510px); transform: rotate(-2deg); opacity: .45; } .reference-flower-fallback.flower-b { top: -16%; left: -10%; width: min(21vw, 285px); opacity: .26; } .reference-flower-fallback.flower-c { top: 18%; right: -7%; width: min(18vw, 245px); opacity: .34; } .reference-flower-fallback.flower-d { top: 58%; left: -9%; width: min(17vw, 230px); opacity: .28; } .reference-flower-fallback.flower-e { top: 62%; right: -9%; width: min(19vw, 260px); opacity: .32; } .reference-flower-fallback.flower-f { bottom: -20%; left: auto; right: 22%; width: min(21vw, 285px); opacity: .29; } }
+.fallback-botanical { position: absolute; inset: 0; overflow: hidden; }
+.reference-flower-fallback { position: absolute; width: min(76vw, 440px); height: auto; aspect-ratio: 1; object-fit: contain; opacity: .42; filter: brightness(.78) saturate(.74) drop-shadow(0 28px 34px rgba(108, 56, 72, .11)); will-change: transform; }
+.reference-flower-fallback.flower-a { top: -10%; left: auto; right: -19%; transform: rotate(-2deg); width: min(66vw, 380px); opacity: .46; }
+.reference-flower-fallback.flower-b { top: -9%; left: -22%; transform: rotate(-13deg); width: min(43vw, 250px); opacity: .30; }
+.reference-flower-fallback.flower-c { top: 26%; right: -19%; transform: rotate(11deg); width: min(42vw, 250px); opacity: .34; }
+.reference-flower-fallback.flower-d { top: 43%; left: -22%; transform: rotate(13deg); width: min(38vw, 225px); opacity: .28; }
+.reference-flower-fallback.flower-e { bottom: 8%; left: -21%; top: auto; transform: rotate(-16deg); width: min(43vw, 255px); opacity: .34; }
+.reference-flower-fallback.flower-f { bottom: -15%; left: auto; right: -15%; transform: rotate(5deg); width: min(48vw, 285px); opacity: .32; }
+@media (min-width: 720px) {
+  .reference-flower-fallback.flower-a { top: 4%; left: auto; right: -5%; width: min(36vw, 510px); transform: rotate(-2deg); opacity: .45; }
+  .reference-flower-fallback.flower-b { top: -16%; left: -10%; width: min(21vw, 285px); opacity: .26; }
+  .reference-flower-fallback.flower-c { top: 18%; right: -7%; width: min(18vw, 245px); opacity: .34; }
+  .reference-flower-fallback.flower-d { top: 58%; left: -9%; width: min(17vw, 230px); opacity: .28; }
+  .reference-flower-fallback.flower-e { top: 62%; right: -9%; width: min(19vw, 260px); opacity: .32; }
+  .reference-flower-fallback.flower-f { bottom: -20%; left: auto; right: 22%; width: min(21vw, 285px); opacity: .29; }
+}
 .grain { position: fixed; inset: 0; z-index: 30; pointer-events: none; opacity: .08; background-image: radial-gradient(rgba(239, 231, 221, .24) .45px, transparent .7px); background-size: 5px 5px; }
 .topbar { position: fixed; z-index: 40; top: 0; left: 0; right: 0; display: flex; align-items: center; justify-content: space-between; height: 64px; padding: max(14px, env(safe-area-inset-top)) 20px 8px; color: var(--muted); font: 10px var(--mono); letter-spacing: .13em; text-transform: uppercase; pointer-events: none; }
 .topbar > * { pointer-events: auto; }
