@@ -1,6 +1,7 @@
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js";
 
-const clamp = (value, min, max) => Math.max(min, Math.min(max, value));\nconst FLOWER_ASSET = "./assets/3d/source/flower-original-cutout.png?v=transparent-flower-3";
+const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+const FLOWER_ASSET = "./assets/3d/source/flower-original-cutout.png?v=transparent-flower-3";
 
 function createHeartGeometry() {
   const shape = new THREE.Shape();
