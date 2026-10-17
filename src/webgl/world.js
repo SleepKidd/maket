@@ -1,7 +1,7 @@
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js";
 
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
-const FLOWER_ASSET = "./assets/3d/source/flower-original-cutout.png?v=botanical-cluster-1";
+const FLOWER_ASSET = "./assets/3d/source/flower-original-cutout.png?v=botanical-soft-1";
 
 function createReferenceMaterial(texture) {
   return new THREE.MeshBasicMaterial({
@@ -11,6 +11,7 @@ function createReferenceMaterial(texture) {
     transparent: true,
     alphaTest: .015,
     depthWrite: false,
+    opacity: .46,
   });
 }
 
@@ -21,23 +22,27 @@ function createReferenceFlower(geometry, material) {
 }
 
 const FLOWER_LAYOUT_DESKTOP = [
-  { x: -3.75, y: 2.55, z: -2.6, scale: .28, rotation: -.16, phase: .2 },
-  { x: -3.35, y: -1.95, z: -1.7, scale: .24, rotation: .13, phase: 1.1 },
-  { x: .25, y: 2.45, z: -3.0, scale: .27, rotation: -.08, phase: 2.2 },
-  { x: 3.05, y: .55, z: -1.2, scale: .48, rotation: .09, phase: 3.0 },
-  { x: 3.75, y: 2.3, z: -2.35, scale: .32, rotation: -.12, phase: 4.2 },
-  { x: 3.35, y: -1.75, z: -1.55, scale: .25, rotation: .18, phase: 5.1 },
-  { x: .2, y: -2.05, z: -1.7, scale: .22, rotation: -.22, phase: 5.8 },
-  { x: 1.75, y: -1.35, z: -3.35, scale: .22, rotation: .15, phase: 6.4 },
+  { x: -4.35, y: 2.65, z: -3.35, scale: .48, rotation: -.16, phase: .2 },
+  { x: -4.25, y: -.35, z: -1.75, scale: .36, rotation: .13, phase: 1.1 },
+  { x: -3.95, y: -2.25, z: -2.8, scale: .42, rotation: -.08, phase: 2.2 },
+  { x: 4.2, y: 2.4, z: -2.9, scale: .44, rotation: .09, phase: 3.0 },
+  { x: 4.35, y: .15, z: -1.35, scale: .56, rotation: -.12, phase: 4.2 },
+  { x: 4.05, y: -2.05, z: -2.45, scale: .40, rotation: .18, phase: 5.1 },
+  { x: -.75, y: 3.05, z: -3.8, scale: .28, rotation: -.22, phase: 5.8 },
+  { x: .95, y: -2.65, z: -3.55, scale: .32, rotation: .15, phase: 6.4 },
+  { x: -1.9, y: 2.15, z: -4.1, scale: .26, rotation: .08, phase: 7.2 },
+  { x: 2.1, y: -2.15, z: -4.0, scale: .25, rotation: -.1, phase: 8.1 },
 ];
 
 const FLOWER_LAYOUT_MOBILE = [
-  { x: -.95, y: 1.45, z: -2.4, scale: .30, rotation: -.14, phase: .2 },
-  { x: .86, y: 1.25, z: -1.7, scale: .34, rotation: .12, phase: 1.0 },
-  { x: -1.02, y: -.05, z: -1.35, scale: .23, rotation: .18, phase: 1.8 },
-  { x: .98, y: -.55, z: -2.25, scale: .28, rotation: -.16, phase: 2.6 },
-  { x: -.62, y: -1.7, z: -2.9, scale: .26, rotation: .09, phase: 3.5 },
-  { x: .72, y: -1.95, z: -1.45, scale: .20, rotation: -.2, phase: 4.4 },
+  { x: -1.62, y: 2.15, z: -3.25, scale: .36, rotation: -.14, phase: .2 },
+  { x: 1.55, y: 1.78, z: -2.2, scale: .42, rotation: .12, phase: 1.0 },
+  { x: -1.52, y: .42, z: -2.55, scale: .28, rotation: .18, phase: 1.8 },
+  { x: 1.48, y: -.25, z: -1.65, scale: .34, rotation: -.16, phase: 2.6 },
+  { x: -1.45, y: -1.75, z: -2.9, scale: .32, rotation: .09, phase: 3.5 },
+  { x: 1.52, y: -1.85, z: -2.1, scale: .30, rotation: -.2, phase: 4.4 },
+  { x: -.95, y: 2.95, z: -4.0, scale: .24, rotation: -.08, phase: 5.2 },
+  { x: .9, y: -2.85, z: -3.7, scale: .24, rotation: .16, phase: 6.1 },
 ];
 
 function createFlowerCluster(texture, mobile) {
