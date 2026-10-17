@@ -21,14 +21,14 @@ function createReferenceFlower(geometry, material) {
 }
 
 const FLOWER_LAYOUT_DESKTOP = [
-  { x: -3.15, y: 1.25, z: -2.05, scale: .44, rotation: -.16, phase: .2 },
-  { x: -1.55, y: -.05, z: -1.1, scale: .30, rotation: .13, phase: 1.1 },
-  { x: .05, y: 1.25, z: -2.8, scale: .34, rotation: -.08, phase: 2.2 },
-  { x: 1.55, y: .2, z: -1.3, scale: .48, rotation: .09, phase: 3.0 },
-  { x: 3.1, y: 1.45, z: -2.35, scale: .40, rotation: -.12, phase: 4.2 },
-  { x: 2.75, y: -1.25, z: -1.55, scale: .26, rotation: .18, phase: 5.1 },
-  { x: -.65, y: -1.35, z: -1.7, scale: .25, rotation: -.22, phase: 5.8 },
-  { x: -.05, y: -.55, z: -3.35, scale: .20, rotation: .15, phase: 6.4 },
+  { x: -3.75, y: 2.55, z: -2.6, scale: .28, rotation: -.16, phase: .2 },
+  { x: -3.35, y: -1.95, z: -1.7, scale: .24, rotation: .13, phase: 1.1 },
+  { x: .25, y: 2.45, z: -3.0, scale: .27, rotation: -.08, phase: 2.2 },
+  { x: 3.05, y: .55, z: -1.2, scale: .48, rotation: .09, phase: 3.0 },
+  { x: 3.75, y: 2.3, z: -2.35, scale: .32, rotation: -.12, phase: 4.2 },
+  { x: 3.35, y: -1.75, z: -1.55, scale: .25, rotation: .18, phase: 5.1 },
+  { x: .2, y: -2.05, z: -1.7, scale: .22, rotation: -.22, phase: 5.8 },
+  { x: 1.75, y: -1.35, z: -3.35, scale: .22, rotation: .15, phase: 6.4 },
 ];
 
 const FLOWER_LAYOUT_MOBILE = [
