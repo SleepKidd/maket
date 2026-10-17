@@ -1,35 +1,10 @@
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js";
 
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
-const FLOWER_ASSET = "./assets/3d/source/flower-original-cutout.png?v=transparent-flower-3";
+const FLOWER_ASSET = "./assets/3d/source/flower-original-cutout.png?v=botanical-cluster-1";
 
-function createHeartGeometry() {
-  const shape = new THREE.Shape();
-  shape.moveTo(0, -1.05);
-  shape.bezierCurveTo(-.26, -.82, -1.2, -.22, -1.08, .42);
-  shape.bezierCurveTo(-.98, 1.02, -.28, 1.12, 0, .52);
-  shape.bezierCurveTo(.28, 1.12, .98, 1.02, 1.08, .42);
-  shape.bezierCurveTo(1.2, -.22, .26, -.82, 0, -1.05);
-  const geometry = new THREE.ExtrudeGeometry(shape, {
-    depth: .24,
-    bevelEnabled: true,
-    bevelSegments: 2,
-    steps: 1,
-    bevelSize: .065,
-    bevelThickness: .055,
-    curveSegments: 8,
-  });
-  geometry.center();
-  geometry.computeVertexNormals();
-  return geometry;
-}
-
-// The archive contains a finished 2800×2800 raster render. The production
-// asset is the same flower with the blue field removed as real alpha
-// transparency. The plane gives those original pixels a depth position in
-// the Three.js composition without inventing a different flower.
-function createReferenceFlower(texture) {
-  const material = new THREE.MeshBasicMaterial({
+function createReferenceMaterial(texture) {
+  return new THREE.MeshBasicMaterial({
     map: texture,
     side: THREE.DoubleSide,
     toneMapped: false,
@@ -37,9 +12,50 @@ function createReferenceFlower(texture) {
     alphaTest: .015,
     depthWrite: false,
   });
-  const plane = new THREE.Mesh(new THREE.PlaneGeometry(2.8, 2.8), material);
-  plane.frustumCulled = false;
-  return plane;
+}
+
+function createReferenceFlower(geometry, material) {
+  const flower = new THREE.Mesh(geometry, material);
+  flower.frustumCulled = false;
+  return flower;
+}
+
+const FLOWER_LAYOUT_DESKTOP = [
+  { x: -3.15, y: 1.25, z: -2.05, scale: .44, rotation: -.16, phase: .2 },
+  { x: -1.55, y: -.05, z: -1.1, scale: .30, rotation: .13, phase: 1.1 },
+  { x: .05, y: 1.25, z: -2.8, scale: .34, rotation: -.08, phase: 2.2 },
+  { x: 1.55, y: .2, z: -1.3, scale: .48, rotation: .09, phase: 3.0 },
+  { x: 3.1, y: 1.45, z: -2.35, scale: .40, rotation: -.12, phase: 4.2 },
+  { x: 2.75, y: -1.25, z: -1.55, scale: .26, rotation: .18, phase: 5.1 },
+  { x: -.65, y: -1.35, z: -1.7, scale: .25, rotation: -.22, phase: 5.8 },
+  { x: -.05, y: -.55, z: -3.35, scale: .20, rotation: .15, phase: 6.4 },
+];
+
+const FLOWER_LAYOUT_MOBILE = [
+  { x: -.95, y: 1.45, z: -2.4, scale: .30, rotation: -.14, phase: .2 },
+  { x: .86, y: 1.25, z: -1.7, scale: .34, rotation: .12, phase: 1.0 },
+  { x: -1.02, y: -.05, z: -1.35, scale: .23, rotation: .18, phase: 1.8 },
+  { x: .98, y: -.55, z: -2.25, scale: .28, rotation: -.16, phase: 2.6 },
+  { x: -.62, y: -1.7, z: -2.9, scale: .26, rotation: .09, phase: 3.5 },
+  { x: .72, y: -1.95, z: -1.45, scale: .20, rotation: -.2, phase: 4.4 },
+];
+
+function createFlowerCluster(texture, mobile) {
+  const geometry = new THREE.PlaneGeometry(2.8, 2.8);
+  const material = createReferenceMaterial(texture);
+  const group = new THREE.Group();
+  const layout = mobile ? FLOWER_LAYOUT_MOBILE : FLOWER_LAYOUT_DESKTOP;
+  const flowers = layout.map((item) => {
+    const flower = createReferenceFlower(geometry, material);
+    flower.userData.base = item;
+    flower.userData.growth = .18;
+    group.add(flower);
+    return flower;
+  });
+  group.userData.flowers = flowers;
+  group.userData.geometry = geometry;
+  group.userData.material = material;
+  return group;
 }
 
 export function createBotanicalWorld(canvas, quality) {
@@ -57,44 +73,30 @@ export function createBotanicalWorld(canvas, quality) {
   camera.position.set(0, .15, 7.4);
 
   const rig = new THREE.Group();
-  const referenceFlowerGroup = new THREE.Group();
+  const botanicalGroup = new THREE.Group();
   const foreground = new THREE.Group();
-  const heartGroup = new THREE.Group();
-  scene.add(rig, foreground, heartGroup);
-  rig.add(referenceFlowerGroup);
+  scene.add(rig, foreground);
+  rig.add(botanicalGroup);
 
   const ambient = new THREE.AmbientLight(0xfff4ea, 1.35);
   const warm = new THREE.PointLight(0xffc7a7, 5, 15, 2);
   warm.position.set(2.5, 2.8, 3.2);
   scene.add(ambient, warm);
 
-  let referenceFlower;
-  const referenceTexture = new THREE.TextureLoader().load(
+  let referenceTexture;
+  let flowerCluster;
+  const textureLoader = new THREE.TextureLoader();
+  referenceTexture = textureLoader.load(
     FLOWER_ASSET,
     (texture) => {
       texture.colorSpace = THREE.SRGBColorSpace;
       texture.needsUpdate = true;
     },
     undefined,
-    () => { if (referenceFlower) referenceFlower.visible = false; },
+    () => { if (flowerCluster) flowerCluster.visible = false; },
   );
-  referenceFlower = createReferenceFlower(referenceTexture);
-  referenceFlowerGroup.add(referenceFlower);
-
-  const heartMaterial = new THREE.MeshPhysicalMaterial({
-    color: 0xc9677f,
-    roughness: .28,
-    metalness: .04,
-    clearcoat: .65,
-    clearcoatRoughness: .18,
-    emissive: 0x5c2237,
-    emissiveIntensity: .12,
-    transparent: true,
-    opacity: .72,
-  });
-  const heart = new THREE.Mesh(createHeartGeometry(), heartMaterial);
-  heartGroup.add(heart);
-  heart.rotation.z = -.12;
+  flowerCluster = createFlowerCluster(referenceTexture, window.innerWidth < 720);
+  botanicalGroup.add(flowerCluster);
 
   const dustCount = Math.max(34, Math.floor(quality.petals * .48));
   const dustPositions = new Float32Array(dustCount * 3);
@@ -116,6 +118,18 @@ export function createBotanicalWorld(canvas, quality) {
   let time = 0;
   let width = 1;
   let height = 1;
+  let mobile = window.innerWidth < 720;
+
+  function applyLayout() {
+    mobile = width < 720;
+    const layout = mobile ? FLOWER_LAYOUT_MOBILE : FLOWER_LAYOUT_DESKTOP;
+    const flowers = flowerCluster.userData.flowers;
+    flowers.forEach((flower, index) => {
+      const item = layout[index % layout.length];
+      flower.userData.base = item;
+      flower.userData.growth = Math.max(flower.userData.growth || .18, .18);
+    });
+  }
 
   function updateSize() {
     const rect = canvas.getBoundingClientRect();
@@ -124,30 +138,32 @@ export function createBotanicalWorld(canvas, quality) {
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
-
-    const mobile = width < 720;
-    referenceFlowerGroup.position.set(mobile ? 0 : 1.45, mobile ? .7 : .55, -1.55);
-    referenceFlowerGroup.scale.setScalar(mobile ? .86 : 1.08);
-    heartGroup.position.set(mobile ? 1.12 : 2.1, mobile ? .15 : 1.18, -.8);
-    heartGroup.scale.setScalar(mobile ? .34 : .48);
+    applyLayout();
   }
 
   function update(now, delta) {
     if (!active) return;
     time += delta;
-    referenceFlowerGroup.rotation.y += ((pointerX * .055) - referenceFlowerGroup.rotation.y) * .06;
-    referenceFlowerGroup.rotation.x += ((-pointerY * .035) - referenceFlowerGroup.rotation.x) * .06;
-    camera.position.x += ((pointerX * .18) - camera.position.x) * .025;
-    camera.position.y += ((.12 - pointerY * .12) - camera.position.y) * .025;
+    camera.position.x += ((pointerX * .16) - camera.position.x) * .025;
+    camera.position.y += ((.12 - pointerY * .1) - camera.position.y) * .025;
     camera.lookAt(0, .18, -1.2);
     warm.position.x = 2.5 + pointerX * 1.1;
     warm.position.y = 2.8 - pointerY * .6;
 
-    // One complete scroll through the story equals one full 360° heart turn.
-    heart.rotation.y += ((scrollProgress * Math.PI * 2 + pointerX * .12) - heart.rotation.y) * .08;
-    heart.rotation.x += ((Math.sin(time * .25) * .06 + pointerY * .06) - heart.rotation.x) * .06;
-    heart.position.y = Math.sin(time * .32) * .04;
-    heartMaterial.opacity += ((.18 + scrollProgress * .62) - heartMaterial.opacity) * .06;
+    const growth = .16 + scrollProgress * .84;
+    const flowers = flowerCluster.userData.flowers;
+    flowers.forEach((flower, index) => {
+      const item = flower.userData.base;
+      const sway = Math.sin(time * (.22 + index * .012) + item.phase) * .035;
+      const drift = Math.sin(time * .12 + item.phase) * (mobile ? .035 : .07);
+      flower.position.set(item.x + drift + pointerX * (.035 + item.scale * .025), item.y + sway + pointerY * .02, item.z);
+      flower.rotation.set(-pointerY * .02, pointerX * .035, item.rotation + Math.sin(time * .18 + item.phase) * .018);
+      const localGrowth = Math.min(1, growth + index * .025);
+      flower.scale.setScalar(item.scale * (.82 + localGrowth * .18));
+    });
+
+    botanicalGroup.rotation.y += ((pointerX * .022 + scrollProgress * .06) - botanicalGroup.rotation.y) * .045;
+    botanicalGroup.position.y = Math.sin(time * .16) * .025;
     dust.rotation.y = time * .006;
     renderer.render(scene, camera);
   }
@@ -160,6 +176,7 @@ export function createBotanicalWorld(canvas, quality) {
   function setScene(stage, sceneId = "") {
     const isFinal = sceneId === "days" || sceneId === "finale";
     warm.intensity = isFinal ? 8 : sceneId === "letter" ? 2.8 : 5;
+    scrollProgress = clamp(Math.max(scrollProgress, Number(stage || 0) / 14), 0, 1);
   }
 
   function setScrollProgress(value) { scrollProgress = clamp(value, 0, 1); }
@@ -168,10 +185,8 @@ export function createBotanicalWorld(canvas, quality) {
   function stats() { return { drawCalls: renderer.info.render.calls, triangles: renderer.info.render.triangles, textures: renderer.info.memory.textures }; }
   function dispose() {
     referenceTexture.dispose();
-    referenceFlower.geometry.dispose();
-    referenceFlower.material.dispose();
-    heart.geometry.dispose();
-    heartMaterial.dispose();
+    flowerCluster.userData.geometry.dispose();
+    flowerCluster.userData.material.dispose();
     dustGeometry.dispose();
     dustMaterial.dispose();
     renderer.dispose();
